@@ -27,8 +27,13 @@
 
 import config as cf
 from DISClib.ADT import list as lt
-from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import shellsort as shell
+from DISClib.Algorithms.Sorting import insertionsort as insertion
+from DISClib.Algorithms.Sorting import mergesort as merge
+from DISClib.Algorithms.Sorting import quicksort as quick
 assert cf
+import time
+from datetime import datetime
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -36,7 +41,7 @@ los mismos.
 """
 
 # Construccion de modelos
-def newCatalog():
+def newCatalog(tipo: str):
     """
     Inicializa el catálogo. Crea una lista vacia para guardar
     todos los libros, adicionalmente, crea una lista vacia para los autores,
@@ -49,10 +54,12 @@ def newCatalog():
                'artist_years': None,
                'nacionality': None,
                }
-
-    catalog['artworks'] = lt.newList()
-    catalog['artists'] = lt.newList('SINGLE_LINKED')
-
+    if tipo == 'ARRAY_LIST':
+        catalog['artworks'] = lt.newList('ARRAY_LIST')
+        catalog['artists'] = lt.newList('ARRAY_LIST')
+    else:  
+        catalog['artworks'] = lt.newList('LINKED_LIST')
+        catalog['artists'] = lt.newList('LINKED_LIST')
     return catalog
 
 # Funciones para agregar informacion al catalogo
@@ -69,5 +76,46 @@ def addArtist(catalog, artist):
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+def cmpArtworkByDateAcquired(artwork1, artwork2):
+    """
+    Devuelve verdadero (True) si el 'DateAcquired' de artwork1 es menores que el de artwork2
+    Args:
+    artwork1: informacion de la primera obra que incluye su valor 'DateAcquired'
+    artwork2: informacion de la segunda obra que incluye su valor 'DateAcquired'
+    # Funciones de consulta sobre el catálogo
+    """
+    if artwork1['DateAcquired'] == '' or artwork2['DateAcquired'] == '':
+        x = False 
+    else:
+        date_object1 = datetime.strptime(artwork1['DateAcquired'], '%Y-%m-%d').date()
+        date_object2 = datetime.strptime(artwork2['DateAcquired'], '%Y-%m-%d').date()
+        x = ((date_object1) < (date_object2))
 
+    return x
 # Funciones de ordenamiento
+
+def sortAdquires(catalog, size, sort):
+    # TODO completar modificaciones para el laboratorio 4
+    sub_list = lt.subList(catalog['artworks'], 1, size)
+    sub_list = sub_list.copy()
+    if sort == 1:
+        start_time = time.process_time()
+        sorted_list = insertion.sort(sub_list, cmpArtworkByDateAcquired)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+    elif sort == 3:
+        start_time = time.process_time()
+        sorted_list = merge.sort(sub_list, cmpArtworkByDateAcquired)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+    elif sort == 4:
+        start_time = time.process_time()
+        sorted_list = quick.sort(sub_list, cmpArtworkByDateAcquired)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+    else:
+        start_time = time.process_time()
+        sorted_list = shell.sort(sub_list, cmpArtworkByDateAcquired)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000    
+    return elapsed_time_mseg, sorted_list
