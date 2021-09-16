@@ -75,34 +75,35 @@ while True:
     printMenu()
    
     inputs = input('Seleccione una opción para continuar\n')
-    if int(inputs[0]) == 1:
-        print('1- ARRAY_LIST')
-        print('2- LINKED_LIST')
-        tipo = input('Seleccione el tipo de TAD lista\n')
-        if int(tipo[0]) == 1:
-            catalog = initCatalog('ARRAY_LIST')
-            loadData(catalog)
-        elif int(tipo[0]) == 2:
-            catalog = initCatalog('LINKED_LIST')
-            loadData(catalog)
-        print("Cargando información de los archivos ....")
-        print('Obras cargados: ' + str(lt.size(catalog['artworks'])))
-        print('Artistas cargados: ' + str(lt.size(catalog['artists'])))
+    try:
+        if int(inputs[0]) == 1:
+            print('1- ARRAY_LIST')
+            print('2- LINKED_LIST')
+            tipo = input('Seleccione el tipo de TAD lista\n')
+            if int(tipo[0]) == 1:
+                catalog = initCatalog('ARRAY_LIST')
+                loadData(catalog)
+            elif int(tipo[0]) == 2:
+                catalog = initCatalog('LINKED_LIST')
+                loadData(catalog)
+            print("Cargando información de los archivos ....")
+            print('Obras cargados: ' + str(lt.size(catalog['artworks'])))
+            print('Artistas cargados: ' + str(lt.size(catalog['artists'])))
     
-    elif int(inputs[0]) == 2:
-        print('1- Insertion')
-        print('2- Shell')
-        print('3- Merge')
-        print('4- Quick Sorts')
-        ord = input("Eliga el algoritmo de ordenamiento\n ")
-        sort = int(ord)
-    elif int(inputs[0]) == 3:
-        size = input("Indique tamaño de la muestra: ")
-        result = controller.sortAdquires(catalog, int(size), sort)
-        print("Para la muestra de", size, " elementos, el tiempo (mseg) es: ",
+        elif int(inputs[0]) == 2:
+            print('1- Insertion')
+            print('2- Shell')
+            print('3- Merge')
+            print('4- Quick Sorts')
+            ord = input("Eliga el algoritmo de ordenamiento\n ")
+            sort = int(ord)
+        elif int(inputs[0]) == 3:
+            size = input("Indique tamaño de la muestra: ")
+            result = controller.sortAdquires(catalog, int(size), sort)
+            print("Para la muestra de", size, " elementos, el tiempo (mseg) es: ",
                                           str(result[0]))
-        printSortResults(result[1])
-    else:
+            printSortResults(result[1])
+    except:
         sys.exit(0)
 sys.exit(0)
 
