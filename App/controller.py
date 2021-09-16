@@ -52,7 +52,7 @@ def loadArtworks(catalog):
     cada uno de ellos, se crea en la lista de autores, a dicho autor y una
     referencia al libro que se esta procesando.
     """
-    artfile = cf.data_dir + 'Artworks-utf8-small.csv'
+    artfile = cf.data_dir + 'Artworks-utf8-10pct.csv'
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
     for artwork in input_file:
         model.addArtwork(catalog, artwork)  
@@ -63,7 +63,7 @@ def loadArtists(catalog):
     cada uno de ellos, se crea en la lista de autores, a dicho autor y una
     referencia al libro que se esta procesando.
     """
-    artfile = cf.data_dir + 'Artists-utf8-small.csv'
+    artfile = cf.data_dir + 'Artists-utf8-10pct.csv'
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtist(catalog, artist) 

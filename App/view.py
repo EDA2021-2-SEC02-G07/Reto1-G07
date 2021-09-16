@@ -25,7 +25,10 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
+import sys
 
+default_limit = 1000
+sys.setrecursionlimit(default_limit*10)
 
 """
 La vista se encarga de la interacción con el usuario
@@ -68,6 +71,7 @@ def printSortResults(ord_artworks, sample=10):
         i+=1
 catalog = None
 sort = ''
+tipo = '1'
 """
 Menu principal
 """
@@ -76,6 +80,7 @@ while True:
    
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
+        
         print('1- ARRAY_LIST')
         print('2- LINKED_LIST')
         tipo = input('Seleccione el tipo de TAD lista\n')
