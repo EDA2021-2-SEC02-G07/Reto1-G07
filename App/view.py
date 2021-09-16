@@ -86,7 +86,13 @@ while True:
             catalog = initCatalog('LINKED_LIST')
             loadData(catalog)
         print("Cargando información de los archivos ....")
+<<<<<<< HEAD
+        catalog = initCatalog()
+        loadData(catalog)
+        print('Obras cargadas: ' + str(lt.size(catalog['artworks'])))
+=======
         print('Obras cargados: ' + str(lt.size(catalog['artworks'])))
+>>>>>>> 2c12797e7cf0910f8107057ec341a70e228f1b5f
         print('Artistas cargados: ' + str(lt.size(catalog['artists'])))
     
     elif int(inputs[0]) == 2:
@@ -105,3 +111,4 @@ while True:
     else:
         sys.exit(0)
 sys.exit(0)
+
