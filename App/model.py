@@ -27,7 +27,11 @@
 
 import config as cf
 from DISClib.ADT import list as lt
-
+from DISClib.ADT import list as lt
+from DISClib.Algorithms.Sorting import shellsort as shell
+from DISClib.Algorithms.Sorting import insertionsort as insertion
+from DISClib.Algorithms.Sorting import mergesort as merge
+from DISClib.Algorithms.Sorting import quicksort as quick
 assert cf
 
 """
