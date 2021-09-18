@@ -45,13 +45,11 @@ def newCatalog():
     """
     catalog = {'artworks': None,
                'artists': None,
-               'adquire' : None,
-               'artist_years': None,
-               'nacionality': None,
+
                }
 
     catalog['artworks'] = lt.newList()
-    catalog['artists'] = lt.newList('SINGLE_LINKED')
+    catalog['artists'] = lt.newList()
 
     return catalog
 
@@ -66,7 +64,18 @@ def addArtist(catalog, artist):
 
 # Funciones para creacion de datos
 
+
+
+
+
+
 # Funciones de consulta
+
+def firstartist(catalog):
+    artist = lt.getElement(catalog['artists'], 0)
+
+    return artist
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 

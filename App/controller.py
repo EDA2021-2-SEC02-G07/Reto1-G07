@@ -69,4 +69,9 @@ def loadArtists(catalog):
         model.addArtist(catalog, artist) 
 # Funciones de ordenamiento
 
+
+
 # Funciones de consulta sobre el catálogo
+def firstartist(catalog):
+
+    return model.firstartist(catalog)
