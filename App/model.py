@@ -77,9 +77,12 @@ def addArtist(catalog, artist):
 # Funciones de consulta
 
 def firstartworks(catalog):
-    for i in range(0,100):
+    for i in range(0,20):
         artworks=lt.getElement(catalog['artworks'], i)
         print (artworks['DateAcquired'])
+    for j in range(0,20):
+        artists=lt.getElement(catalog['artists'], j)
+        print(artists['BeginDate'])
 
     return None
 
@@ -100,6 +103,23 @@ def cmpArtworkByDateAcquired(artwork1, artwork2):
         x = ((date_object1) < (date_object2))
 
     return x
+
+
+def cmpArtistByBeginDate(artist1, artist2):
+    """
+    Devuelve verdadero (True) si el 'BeginDate' de artist1 es menores que el de artist2
+    """
+    if artist1['BeginDate'] == '' or artist2['BeginDate'] == '':
+        x = False 
+    else:
+        date_object1 = artist1['BeginDate']
+        date_object2 = artist2['BeginDate']
+        x = ((date_object1) < (date_object2))
+
+    return x
+
+
+
 # Funciones de ordenamiento
 
 def sort(catalog, sort, key, cmpfunction):
@@ -128,3 +148,80 @@ def sort(catalog, sort, key, cmpfunction):
         stop_time = time.process_time()
         elapsed_time_mseg = (stop_time - start_time)*1000    
     return sorted_list
+
+
+
+
+# Funciones auxiliares de carga y consulta
+
+
+def binary_search_up(catalog, key, key2, item, cmpfunction):
+    sequence= catalog[key]
+    begin_index = 0
+    end_index = lt.size(sequence) - 1
+
+    while begin_index <= end_index:
+        midpoint = begin_index + (end_index - begin_index) // 2
+        midpoint_value = lt.getElement(sequence, midpoint)
+        if midpoint_value[key2] == item:
+            try:
+                midpoint_next_value = lt.getElement(sequence, midpoint + 1)
+
+                if cmpfunction(midpoint_value, midpoint_next_value) == True:
+                    return midpoint
+                else:
+                    begin_index = midpoint + 1
+            except:
+                return midpoint
+
+        elif item < midpoint_value[key2]:
+            end_index = midpoint - 1
+
+        else:
+            begin_index = midpoint + 1
+
+
+    if lt.getElement(sequence, midpoint) > item:
+        midpoint -= 1
+
+    return midpoint
+
+
+
+
+def binary_search_down(catalog, key, key2, item, cmpfunction):
+    sequence = catalog[key]
+    begin_index = 0
+    end_index = lt.size(sequence) - 1
+
+    while begin_index <= end_index:
+        midpoint = begin_index + (end_index - begin_index) // 2
+        midpoint_value = lt.getElement(sequence, midpoint)
+        if midpoint_value[key2] == item:
+            try:
+                midpoint_next_value = lt.getElement(sequence, midpoint -1)
+
+                if cmpfunction(midpoint_next_value, midpoint_value) == True:
+                    return midpoint
+                else:
+                    end_index = midpoint - 1
+            except:
+                return midpoint
+
+        elif item < midpoint_value[key2]:
+            end_index = midpoint - 1
+
+        else:
+            begin_index = midpoint + 1
+
+    if lt.getElement(sequence, midpoint) < item:
+        midpoint += 1
+    return midpoint
+
+
+
+def binary_interval_search(catalog, key, key2, item1, item2, cmpfunction):
+    pos1= binary_search_down(catalog, key, key2, item1, cmpfunction)
+    pos2= binary_search_up(catalog, key, key2, item2, cmpfunction)
+
+    return pos1, pos2

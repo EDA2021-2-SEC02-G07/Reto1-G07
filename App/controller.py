@@ -45,7 +45,8 @@ def loadData(catalog):
     """
     loadArtworks(catalog)
     loadArtists(catalog)
-    catalog['artworks']=sortAdquires(catalog, 3)
+    catalog['artworks'] = sortAdquires(catalog, 3)
+    catalog['artists'] = sortArtists(catalog, 3)
 
 def loadArtworks(catalog):
     """
@@ -64,7 +65,7 @@ def loadArtists(catalog):
     cada uno de ellos, se crea en la lista de autores, a dicho autor y una
     referencia al libro que se esta procesando.
     """
-    artfile = cf.data_dir + 'Artists-utf8-small.csv'
+    artfile = cf.data_dir + 'Artists-utf8-5pct.csv'
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtist(catalog, artist) 
@@ -78,8 +79,16 @@ def sortAdquires(catalog, sort):
     return model.sort(catalog, sort, 'artworks', model.cmpArtworkByDateAcquired)
 
 
+def sortArtists(catalog, sort):
+    """
+    Ordena los libros por average_rating
+    """
+    return model.sort(catalog, sort, 'artists', model.cmpArtistByBeginDate)
+
 
 # Funciones de consulta sobre el catálogo
 def firsts_artworks(catalog):
     model.firstartworks(catalog)
     return None
+
+
