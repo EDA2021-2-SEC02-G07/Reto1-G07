@@ -87,6 +87,15 @@ def firstartworks(catalog):
     return None
 
 
+def Artist_in_a_range(year1, year2, catalog):
+    pos1, pos2 = binary_interval_search(catalog, 'artists', 'BeginDate', year1, year2, cmpArtistByBeginDate)
+    return pos1, pos2
+
+
+
+
+
+# Funciones de comparación
 def cmpArtworkByDateAcquired(artwork1, artwork2):
     """
     Devuelve verdadero (True) si el 'DateAcquired' de artwork1 es menores que el de artwork2
@@ -163,7 +172,7 @@ def binary_search_up(catalog, key, key2, item, cmpfunction):
     while begin_index <= end_index:
         midpoint = begin_index + (end_index - begin_index) // 2
         midpoint_value = lt.getElement(sequence, midpoint)
-        if midpoint_value[key2] == item:
+        if int(midpoint_value[key2]) == item:
             try:
                 midpoint_next_value = lt.getElement(sequence, midpoint + 1)
 
@@ -174,14 +183,14 @@ def binary_search_up(catalog, key, key2, item, cmpfunction):
             except:
                 return midpoint
 
-        elif item < midpoint_value[key2]:
+        elif item < int(midpoint_value[key2]):
             end_index = midpoint - 1
 
         else:
             begin_index = midpoint + 1
 
 
-    if lt.getElement(sequence, midpoint) > item:
+    if int(lt.getElement(sequence, midpoint)[key2]) > item:
         midpoint -= 1
 
     return midpoint
@@ -197,7 +206,7 @@ def binary_search_down(catalog, key, key2, item, cmpfunction):
     while begin_index <= end_index:
         midpoint = begin_index + (end_index - begin_index) // 2
         midpoint_value = lt.getElement(sequence, midpoint)
-        if midpoint_value[key2] == item:
+        if int(midpoint_value[key2]) == item:
             try:
                 midpoint_next_value = lt.getElement(sequence, midpoint -1)
 
@@ -208,13 +217,13 @@ def binary_search_down(catalog, key, key2, item, cmpfunction):
             except:
                 return midpoint
 
-        elif item < midpoint_value[key2]:
+        elif item < int(midpoint_value[key2]):
             end_index = midpoint - 1
 
         else:
             begin_index = midpoint + 1
 
-    if lt.getElement(sequence, midpoint) < item:
+    if int(lt.getElement(sequence, midpoint)[key2]) < item:
         midpoint += 1
     return midpoint
 
@@ -223,5 +232,6 @@ def binary_search_down(catalog, key, key2, item, cmpfunction):
 def binary_interval_search(catalog, key, key2, item1, item2, cmpfunction):
     pos1= binary_search_down(catalog, key, key2, item1, cmpfunction)
     pos2= binary_search_up(catalog, key, key2, item2, cmpfunction)
+    print(pos1, pos2)
 
     return pos1, pos2

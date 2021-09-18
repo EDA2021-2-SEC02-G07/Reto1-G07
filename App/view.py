@@ -70,9 +70,25 @@ while True:
         loadData(catalog)
         print('Obras cargadas: ' + str(lt.size(catalog['artworks'])))
         print('Artistas cargados: ' + str(lt.size(catalog['artists'])))
-        controller.firsts_artworks(catalog)
+        
     elif int(inputs[0]) == 2:
-        pass
+        try:
+            year1=int(input('Ingrese el año inicial: '))
+            year2=int(input('Ingrese el año final: '))
+        except:
+            print('Por favor ingrese un año válido')
+        size, positions = controller.Artist_in_a_range(year1, year2, catalog)
+        
+        if positions == None:
+            print('No hay artistas en el rango')
+        
+        else:
+            print('Hay', size, 'Artistas entre los años ingresados')
+            print('Los primeros y los últimos 3 artistas son:')
+            print(positions)
+            for i in positions:
+                print(lt.getElement(catalog['artists'], i))
+
 
     else:
         sys.exit(0)

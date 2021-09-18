@@ -92,3 +92,19 @@ def firsts_artworks(catalog):
     return None
 
 
+def Artist_in_a_range(year1, year2, catalog):
+    posiciones = []
+    if year1 <= 0:
+        year1 = 1
+    pos1, pos2 = model.Artist_in_a_range(year1, year2, catalog)
+    size = pos2 - pos1 + 1
+    if size<=0:
+        return size, None
+    elif size <= 3:
+        while pos1 <= pos2:
+            posiciones.append(pos1)
+            pos1 += 1
+    else:
+        posiciones=[pos1, pos1 + 1, pos1 +2, pos2 - 2, pos2 -1, pos2]
+        
+    return size, posiciones 
