@@ -27,12 +27,13 @@
 
 import config as cf
 from DISClib.ADT import list as lt
-from DISClib.ADT import list as lt
 from DISClib.Algorithms.Sorting import shellsort as shell
 from DISClib.Algorithms.Sorting import insertionsort as insertion
 from DISClib.Algorithms.Sorting import mergesort as merge
 from DISClib.Algorithms.Sorting import quicksort as quick
 assert cf
+import time
+from datetime import datetime
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -76,9 +77,9 @@ def addArtist(catalog, artist):
 # Funciones de consulta
 
 def firstartworks(catalog):
-    for i in range(0,4):
+    for i in range(0,100):
         artworks=lt.getElement(catalog['artworks'], i)
-        print (artworks)
+        print (artworks['DateAcquired'])
 
     return None
 
@@ -126,4 +127,4 @@ def sort(catalog, sort, key, cmpfunction):
         sorted_list = shell.sort(sub_list, cmpfunction)
         stop_time = time.process_time()
         elapsed_time_mseg = (stop_time - start_time)*1000    
-    return elapsed_time_mseg, sorted_list
+    return sorted_list
