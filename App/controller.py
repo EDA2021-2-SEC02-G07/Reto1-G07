@@ -35,6 +35,7 @@ def initCatalog():
     Llama la funcion de inicializacion del catalogo del modelo.
     """
     catalog = model.newCatalog()
+    catalog['artworks']=sortAdquires(catalog, 3)
     return catalog
 
 # Funciones para la carga de datos
@@ -67,11 +68,18 @@ def loadArtists(catalog):
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtist(catalog, artist) 
+
 # Funciones de ordenamiento
+
+def sortAdquires(catalog, sort):
+    """
+    Ordena los libros por average_rating
+    """
+    return model.sort(catalog, sort, 'artworks', model.cmpArtworkByDateAcquired)
 
 
 
 # Funciones de consulta sobre el catálogo
-def firstartist(catalog):
-
-    return model.firstartist(catalog)
+def firsts_artworks(catalog):
+    model.firstartworks(catalog)
+    return None

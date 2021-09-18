@@ -75,10 +75,12 @@ def addArtist(catalog, artist):
 
 # Funciones de consulta
 
-def firstartist(catalog):
-    artist = lt.getElement(catalog['artists'], 0)
+def firstartworks(catalog):
+    for i in range(0,4):
+        artworks=lt.getElement(catalog['artworks'], i)
+        print (artworks)
 
-    return artist
+    return None
 
 
 def cmpArtworkByDateAcquired(artwork1, artwork2):
@@ -99,28 +101,29 @@ def cmpArtworkByDateAcquired(artwork1, artwork2):
     return x
 # Funciones de ordenamiento
 
-def sortAdquires(catalog, size, sort):
+def sort(catalog, sort, key, cmpfunction):
     # TODO completar modificaciones para el laboratorio 4
-    sub_list = lt.subList(catalog['artworks'], 1, size)
+    size=lt.size(catalog[key])
+    sub_list = lt.subList(catalog[key], 1, size)
     sub_list = sub_list.copy()
     if sort == 1:
         start_time = time.process_time()
-        sorted_list = insertion.sort(sub_list, cmpArtworkByDateAcquired)
+        sorted_list = insertion.sort(sub_list, cmpfunction)
         stop_time = time.process_time()
         elapsed_time_mseg = (stop_time - start_time)*1000
     elif sort == 3:
         start_time = time.process_time()
-        sorted_list = merge.sort(sub_list, cmpArtworkByDateAcquired)
+        sorted_list = merge.sort(sub_list, cmpfunction)
         stop_time = time.process_time()
         elapsed_time_mseg = (stop_time - start_time)*1000
     elif sort == 4:
         start_time = time.process_time()
-        sorted_list = quick.sort(sub_list, cmpArtworkByDateAcquired)
+        sorted_list = quick.sort(sub_list, cmpfunction)
         stop_time = time.process_time()
         elapsed_time_mseg = (stop_time - start_time)*1000
     else:
         start_time = time.process_time()
-        sorted_list = shell.sort(sub_list, cmpArtworkByDateAcquired)
+        sorted_list = shell.sort(sub_list, cmpfunction)
         stop_time = time.process_time()
         elapsed_time_mseg = (stop_time - start_time)*1000    
     return elapsed_time_mseg, sorted_list

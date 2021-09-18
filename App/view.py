@@ -70,7 +70,7 @@ while True:
         loadData(catalog)
         print('Obras cargadas: ' + str(lt.size(catalog['artworks'])))
         print('Artistas cargados: ' + str(lt.size(catalog['artists'])))
-        print(controller.firstartist(catalog))
+        controller.firsts_artworks(catalog)
     elif int(inputs[0]) == 2:
         pass
 
