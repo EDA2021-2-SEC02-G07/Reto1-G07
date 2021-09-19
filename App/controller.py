@@ -70,6 +70,33 @@ def loadArtists(catalog):
     for artist in input_file:
         model.addArtist(catalog, artist) 
 
+def loadArtistMediumsTags(catalog):
+    artists = catalog['artists']
+
+    for element in artists:
+        name = element['DisplayName']
+        ID = element['ConstituentID']
+        artist_medium, artist_tag = model.newArtistMedium(ID, name)
+        model.addArtistMedium(catalog, artist_medium)
+        model.addArtistTag(catalog, artist_tag)
+
+def fillArtistMediums(catalog):
+    Artworks= catalog['artworks']
+    artists_mediums = catalog['artists_mediums']
+    artists_tags = catalog['artists_tags']
+
+    for artwork in Artworks:
+        IDs = artwork['ConstituentID']
+        medium = artwork['Medium']
+
+        for ID in IDs:
+            pos = model.binary_search_down(catalog, 'artists_mediums' , ID, cmpfunction, cmpfunction2)#FUNCIÓN
+            
+
+
+
+
+
 # Funciones de ordenamiento
 
 def sortAdquires(catalog, sort):
@@ -84,6 +111,16 @@ def sortArtists(catalog, sort):
     Ordena los libros por average_rating
     """
     return model.sort(catalog, sort, 'artists', model.cmpArtistByBeginDate)
+
+
+def sortArtistMediums(catalog, sort):
+
+    return model.sort(catalog, sort, 'artist_mediums', ) #FUNCIOOOON
+
+
+def sortArtistTags(catalog, sort):
+    return model.sort(catalog, sort, 'artist_mediums', ) #FUNCIOOOON
+
 
 
 # Funciones de consulta sobre el catálogo
@@ -106,5 +143,5 @@ def Artist_in_a_range(year1, year2, catalog):
             pos1 += 1
     else:
         posiciones=[pos1, pos1 + 1, pos1 +2, pos2 - 2, pos2 -1, pos2]
-        
+
     return size, posiciones 

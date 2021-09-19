@@ -50,11 +50,15 @@ def newCatalog():
     """
     catalog = {'artworks': None,
                'artists': None,
+               'artists_mediums': None,
+               'artists_tags': None
 
                }
 
     catalog['artworks'] = lt.newList()
     catalog['artists'] = lt.newList()
+    catalog['artists_mediums'] = lt.newList()
+    catalog['artists_tags'] = lt.newList()
 
     return catalog
 
@@ -67,7 +71,36 @@ def addArtist(catalog, artist):
     # Se adiciona el artista a la lista de artistas
     lt.addLast(catalog['artists'], artist)
 
+def addArtistMedium(catalog, artist_medium):
+
+    lt.addLast(catalog['artists_mediums'], artist_medium)
+
+def addArtistTag(catalog, artist_tag):
+
+    lt.addLast(catalog['artists_tags'], artist_tag)
+
+
+
 # Funciones para creacion de datos
+
+def newArtistMedium(ID, name):
+
+    artistmedium = {'ID':0 , 
+                    'name': "", 
+                    'mediums': {'most_used': "", 
+                    'total': "", 'mediums_list':{}}, 
+                    'Artworks': None}
+
+    artisttag = {'ID':0 ,'name': ""}
+    artistmedium['ID'] = ID
+    artistmedium['name'] = name
+    artistmedium['Artworks'] = lt.newList()
+    artisttag['ID'] = ID
+    artisttag['name'] = name
+
+
+    return artistmedium, artisttag
+
 
 
 
@@ -252,5 +285,7 @@ def binary_interval_search(catalog, key, item1, item2, cmpfunction, cmpfunction2
     pos2= binary_search_up(catalog, key, item2, cmpfunction, cmpfunction2)
 
     return pos1, pos2
+
+
 
 
