@@ -232,6 +232,5 @@ def binary_search_down(catalog, key, key2, item, cmpfunction):
 def binary_interval_search(catalog, key, key2, item1, item2, cmpfunction):
     pos1= binary_search_down(catalog, key, key2, item1, cmpfunction)
     pos2= binary_search_up(catalog, key, key2, item2, cmpfunction)
-    print(pos1, pos2)
 
     return pos1, pos2

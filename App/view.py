@@ -85,7 +85,6 @@ while True:
         else:
             print('Hay', size, 'Artistas entre los años ingresados')
             print('Los primeros y los últimos 3 artistas son:')
-            print(positions)
             for i in positions:
                 print(lt.getElement(catalog['artists'], i))
 
