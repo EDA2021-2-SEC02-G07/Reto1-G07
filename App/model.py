@@ -57,7 +57,7 @@ def newCatalog():
 
     catalog['artworks'] = lt.newList()
     catalog['artists'] = lt.newList()
-    catalog['artists_mediums'] = lt.newList()
+    catalog['artists_mediums'] = {}
     catalog['artists_tags'] = lt.newList()
 
     return catalog
@@ -73,11 +73,18 @@ def addArtist(catalog, artist):
 
 def addArtistMedium(catalog, artist_medium):
 
-    lt.addLast(catalog['artists_mediums'], artist_medium)
+    catalog['artists_mediums'][artist_medium['ID']] = artist_medium
+
 
 def addArtistTag(catalog, artist_tag):
 
     lt.addLast(catalog['artists_tags'], artist_tag)
+
+
+def fillArtworks(artlist, artwork):
+
+    lt.addLast(artlist, artwork)
+
 
 
 
@@ -88,7 +95,7 @@ def newArtistMedium(ID, name):
     artistmedium = {'ID':0 , 
                     'name': "", 
                     'mediums': {'most_used': "", 
-                    'total': "", 'mediums_list':{}}, 
+                    'total': 0, 'mediums_list':{}}, 
                     'Artworks': None}
 
     artisttag = {'ID':0 ,'name': ""}
@@ -287,5 +294,27 @@ def binary_interval_search(catalog, key, item1, item2, cmpfunction, cmpfunction2
     return pos1, pos2
 
 
+def MostUsedMedium(mediums_list):
+    mostused_count = -1
+    mostused = ''
+    for key in mediums_list:
+        value = mediums_list[key]
+        if value > mostused_count:
+            mostused_count = value
+            mostused = key
+    return mostused
+
+
+def size(ulist):
+    size = lt.size(ulist)
+    return size
+
+def getElement(ulist, key, pos):
+    element = lt.getElement(ulist, pos) [key]
+    return element
+
+def getElement1(ulist, pos):
+    element = lt.getElement(ulist, pos)
+    return element
 
 

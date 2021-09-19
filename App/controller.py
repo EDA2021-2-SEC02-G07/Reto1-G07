@@ -45,8 +45,14 @@ def loadData(catalog):
     """
     loadArtworks(catalog)
     loadArtists(catalog)
+    loadArtistMediumsTags(catalog)
+    
     catalog['artworks'] = sortAdquires(catalog, 3)
     catalog['artists'] = sortArtists(catalog, 3)
+    fillArtistMediums(catalog)
+    fillMostUsedMediums(catalog)
+
+    print(catalog['artists_mediums']['4745'])
 
 def loadArtworks(catalog):
     """
@@ -65,32 +71,71 @@ def loadArtists(catalog):
     cada uno de ellos, se crea en la lista de autores, a dicho autor y una
     referencia al libro que se esta procesando.
     """
-    artfile = cf.data_dir + 'Artists-utf8-5pct.csv'
+    artfile = cf.data_dir + 'Artists-utf8-small.csv'
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtist(catalog, artist) 
 
+
 def loadArtistMediumsTags(catalog):
     artists = catalog['artists']
+    size = model.size(artists) #crear
 
-    for element in artists:
-        name = element['DisplayName']
-        ID = element['ConstituentID']
+    for i in range(0, size + 1):
+        name = model.getElement(artists, 'DisplayName', i)   
+        ID = model.getElement(artists, 'ConstituentID', i) 
         artist_medium, artist_tag = model.newArtistMedium(ID, name)
         model.addArtistMedium(catalog, artist_medium)
         model.addArtistTag(catalog, artist_tag)
 
+
+
 def fillArtistMediums(catalog):
-    Artworks= catalog['artworks']
+    Artworks = catalog['artworks']
     artists_mediums = catalog['artists_mediums']
-    artists_tags = catalog['artists_tags']
+    size = model.size(Artworks)
 
-    for artwork in Artworks:
-        IDs = artwork['ConstituentID']
-        medium = artwork['Medium']
+    for i in range(0, size + 1):
+        artwork = model.getElement1(Artworks, i)
+        IDs = model.getElement(Artworks, 'ConstituentID', i)
+        IDs = IDs.replace('[','').replace(']','').split(',')
+        medium = model.getElement(Artworks, 'Medium', i)
 
-        for ID in IDs:
-            pos = model.binary_search_down(catalog, 'artists_mediums' , ID, cmpfunction, cmpfunction2)#FUNCIÓN
+        for ID1 in IDs:
+            ID = str(ID1)
+            try:
+                artlist = artists_mediums [ID] ['Artworks']
+                mediums = artists_mediums[ID]['mediums']
+            except: 
+                continue 
+
+            model.fillArtworks(artlist, artwork)
+            
+
+            if medium in mediums['mediums_list']:
+                mediums['mediums_list'][medium] += 1
+
+            else:
+                mediums['mediums_list'][medium] = 1
+                mediums['total'] += 1
+    
+
+
+def fillMostUsedMediums(catalog):
+    artists_mediums=catalog['artists_mediums']
+
+    for key in artists_mediums:
+        artist_medium = artists_mediums[key]['mediums']
+        mediums_list = artist_medium['mediums_list']
+        most_used_medium = model.MostUsedMedium(mediums_list)
+        artist_medium['most_used'] = most_used_medium
+
+
+
+
+
+    
+
             
 
 
@@ -119,7 +164,7 @@ def sortArtistMediums(catalog, sort):
 
 
 def sortArtistTags(catalog, sort):
-    return model.sort(catalog, sort, 'artist_mediums', ) #FUNCIOOOON
+    return model.sort(catalog, sort, 'artist_tags', ) #FUNCIOOOON
 
 
 

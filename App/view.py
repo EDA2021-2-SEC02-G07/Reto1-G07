@@ -83,8 +83,8 @@ while True:
             print('No hay artistas en el rango')
         
         else:
-            print('Hay', size, 'Artistas entre los años ingresados')
-            print('Los primeros y los últimos 3 artistas son:')
+            print('Hay', size, 'Artista(s) entre los años ingresados')
+            print('Los primeros y los últimos 3 artistas (si los hay) son:')
             for i in positions:
                 print(lt.getElement(catalog['artists'], i))
 
