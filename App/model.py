@@ -270,6 +270,7 @@ def binary_search_up(catalog, key, item, cmpfunction, cmpfunction2):
     sequence= catalog[key]
     begin_index = 0
     end_index = lt.size(sequence) 
+    midpoint = begin_index + (end_index - begin_index) // 2
 
     while begin_index <= end_index:
         midpoint = begin_index + (end_index - begin_index) // 2
@@ -305,6 +306,7 @@ def binary_search_down(catalog, key, item, cmpfunction, cmpfunction2):
     sequence = catalog[key]
     begin_index = 0
     end_index = lt.size(sequence) 
+    midpoint = begin_index + (end_index - begin_index) // 2
 
     while begin_index <= end_index:
         midpoint = begin_index + (end_index - begin_index) // 2
@@ -326,10 +328,11 @@ def binary_search_down(catalog, key, item, cmpfunction, cmpfunction2):
         else:
             begin_index = midpoint + 1
         
-        
-
-    if cmpfunction2(item, lt.getElement(sequence, midpoint)) == -1 < item:
+    if cmpfunction2(item, lt.getElement(sequence, midpoint)) == -1:
         midpoint += 1
+
+    
+
     return midpoint
 
 

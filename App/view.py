@@ -93,11 +93,17 @@ while True:
         name = input('Ingrese el nombre del artista: ')
 
 
-        ID, medium, total, pos1, pos2 = controller.Artworks_in_a_medium(name, catalog)
+        ID, medium, total, pos1, pos2, size = controller.Artworks_in_a_medium(name, catalog)
 
-        print(ID)
-        print(medium) 
-        print(total)
+        print(catalog['artists_mediums'][ID])
+        print('La cantidad de obras es: ', size)
+        print('El medio más empleado es: ', medium) 
+        print('En número de técnicas utilizadas es: ', total)
+        print('Las obras en las que se utilizó', medium, 'son: ')
+        
+        while pos1 <= pos2:
+            print(lt.getElement(catalog['artists_mediums'][ID]['Artworks'], pos1))
+            pos1 += 1
 
 
     else:

@@ -52,7 +52,7 @@ def loadData(catalog):
     fillArtistMediums(catalog)
     fillMostUsedMediums(catalog)
     catalog['artists_tags'] = sortArtistTags(catalog, 3)
-    print(catalog['artists_tags'])
+    
    
 
 
@@ -200,6 +200,7 @@ def Artworks_in_a_medium(name, catalog):
     medium = Artist_medium['mediums']['most_used']
     total = Artist_medium['mediums']['total']
     pos1, pos2 = model.Artworks_in_a_medium(medium, Artist_medium)
+    size = pos2 - pos1 +1
 
-    return ID, medium, total, pos1, pos2
+    return ID, medium, total, pos1, pos2, size
 
