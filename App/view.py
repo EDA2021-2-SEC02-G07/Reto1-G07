@@ -87,6 +87,17 @@ while True:
             print('Los primeros y los últimos 3 artistas (si los hay) son:')
             for i in positions:
                 print(lt.getElement(catalog['artists'], i))
+    
+    elif int(inputs[0]) == 4:
+
+        name = input('Ingrese el nombre del artista: ')
+
+
+        ID, medium, total, pos1, pos2 = controller.Artworks_in_a_medium(name, catalog)
+
+        print(ID)
+        print(medium) 
+        print(total)
 
 
     else:

@@ -132,9 +132,14 @@ def Artist_in_a_range(year1, year2, catalog):
     return pos1, pos2
 
 
+def Artworks_in_a_medium(medium, artworks):
+    pos1, pos2 = binary_interval_search(artworks, 'Artworks', medium, medium, cmpArtworksByMedium, cmpArtworksByMediumItem)
+    return pos1, pos2
 
 
-
+def TagsFromName(name, catalog): 
+    pos1, pos2 = binary_interval_search(catalog, 'artists_tags', name, name, cmpArtistByName, cmpArtistByNameItem)
+    return pos1, pos2
 
 # Funciones de comparación
 def cmpArtworkByDateAcquired(artwork1, artwork2):
@@ -183,6 +188,28 @@ def cmpArtistByBeginDateItem(item, artist):
     elif date2 < date1:
         return 1
 
+
+def cmpArtistByName(artist1,artist2):
+
+    if artist1['name'] == '' or artist2['name'] == '':
+        x = False
+    else:
+        x = artist1['name'] < artist2['name']
+    
+    return x
+
+def cmpArtistByNameItem(item, artist):
+    name1 = artist['name']
+    name2 = item
+
+    if name2 == name1:
+        return 0
+    elif name2 > name1:
+        return -1
+    elif name2 < name1:
+        return 1
+    
+
 def cmpArtworksByMedium(artwork1, artwork2):
 
     if artwork1['Medium'] == ''  or artwork2['Medium'] == '':
@@ -191,6 +218,17 @@ def cmpArtworksByMedium(artwork1, artwork2):
         x = artwork1['Medium'] < artwork2['Medium']
 
     return x
+
+def cmpArtworksByMediumItem(item, artwork):
+    medium1 = artwork['Medium']
+    medium2 = item
+
+    if medium2 == medium1:
+        return 0
+    elif medium2 > medium1:
+        return -1
+    elif medium2 < medium1:
+        return 1
 
 
 # Funciones de ordenamiento
@@ -231,7 +269,7 @@ def sort(catalog, sort, key, cmpfunction):
 def binary_search_up(catalog, key, item, cmpfunction, cmpfunction2):
     sequence= catalog[key]
     begin_index = 0
-    end_index = lt.size(sequence) - 1
+    end_index = lt.size(sequence) 
 
     while begin_index <= end_index:
         midpoint = begin_index + (end_index - begin_index) // 2
@@ -266,7 +304,7 @@ def binary_search_up(catalog, key, item, cmpfunction, cmpfunction2):
 def binary_search_down(catalog, key, item, cmpfunction, cmpfunction2):
     sequence = catalog[key]
     begin_index = 0
-    end_index = lt.size(sequence) - 1
+    end_index = lt.size(sequence) 
 
     while begin_index <= end_index:
         midpoint = begin_index + (end_index - begin_index) // 2
@@ -287,6 +325,8 @@ def binary_search_down(catalog, key, item, cmpfunction, cmpfunction2):
 
         else:
             begin_index = midpoint + 1
+        
+        
 
     if cmpfunction2(item, lt.getElement(sequence, midpoint)) == -1 < item:
         midpoint += 1

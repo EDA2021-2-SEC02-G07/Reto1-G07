@@ -51,8 +51,12 @@ def loadData(catalog):
     catalog['artists'] = sortArtists(catalog, 3)
     fillArtistMediums(catalog)
     fillMostUsedMediums(catalog)
+    catalog['artists_tags'] = sortArtistTags(catalog, 3)
+    print(catalog['artists_tags'])
+   
 
-    print(catalog['artists_mediums']['4400']['Artworks'])
+
+    
 
 def loadArtworks(catalog):
     """
@@ -79,7 +83,7 @@ def loadArtists(catalog):
 
 def loadArtistMediumsTags(catalog):
     artists = catalog['artists']
-    size = model.size(artists) #crear
+    size = model.size(artists) 
 
     for i in range(0, size + 1):
         name = model.getElement(artists, 'DisplayName', i)   
@@ -157,7 +161,7 @@ def sortArworksByMedium(artistmedium, sort):
 
 
 def sortArtistTags(catalog, sort):
-    return model.sort(catalog, sort, 'artist_tags', ) #FUNCIOOOON
+    return model.sort(catalog, sort, 'artists_tags', model.cmpArtistByName) 
 
 
 
@@ -165,6 +169,7 @@ def sortArtistTags(catalog, sort):
 def firsts_artworks(catalog):
     model.firstartworks(catalog)
     return None
+
 
 
 def Artist_in_a_range(year1, year2, catalog):
@@ -183,3 +188,18 @@ def Artist_in_a_range(year1, year2, catalog):
         posiciones=[pos1, pos1 + 1, pos1 +2, pos2 - 2, pos2 -1, pos2]
 
     return size, posiciones 
+
+
+
+
+
+def Artworks_in_a_medium(name, catalog):
+    pos1, pos2= model.TagsFromName(name, catalog)
+    ID = model.getElement(catalog['artists_tags'], 'ID', pos2)
+    Artist_medium = catalog['artists_mediums'][ID]
+    medium = Artist_medium['mediums']['most_used']
+    total = Artist_medium['mediums']['total']
+    pos1, pos2 = model.Artworks_in_a_medium(medium, Artist_medium)
+
+    return ID, medium, total, pos1, pos2
+
