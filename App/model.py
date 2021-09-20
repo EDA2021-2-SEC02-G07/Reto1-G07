@@ -55,10 +55,10 @@ def newCatalog():
 
                }
 
-    catalog['artworks'] = lt.newList()
-    catalog['artists'] = lt.newList()
+    catalog['artworks'] = lt.newList('ARRAY_LIST')
+    catalog['artists'] = lt.newList('ARRAY_LIST')
     catalog['artists_mediums'] = {}
-    catalog['artists_tags'] = lt.newList()
+    catalog['artists_tags'] = lt.newList('ARRAY_LIST')
 
     return catalog
 
@@ -101,7 +101,7 @@ def newArtistMedium(ID, name):
     artisttag = {'ID':0 ,'name': ""}
     artistmedium['ID'] = ID
     artistmedium['name'] = name
-    artistmedium['Artworks'] = lt.newList()
+    artistmedium['Artworks'] = lt.newList('ARRAY_LIST')
     artisttag['ID'] = ID
     artisttag['name'] = name
 
@@ -183,7 +183,14 @@ def cmpArtistByBeginDateItem(item, artist):
     elif date2 < date1:
         return 1
 
+def cmpArtworksByMedium(artwork1, artwork2):
 
+    if artwork1['Medium'] == ''  or artwork2['Medium'] == '':
+        x = False
+    else:
+        x = artwork1['Medium'] < artwork2['Medium']
+
+    return x
 
 
 # Funciones de ordenamiento

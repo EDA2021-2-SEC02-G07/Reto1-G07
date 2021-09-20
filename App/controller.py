@@ -52,7 +52,7 @@ def loadData(catalog):
     fillArtistMediums(catalog)
     fillMostUsedMediums(catalog)
 
-    print(catalog['artists_mediums']['4745'])
+    print(catalog['artists_mediums']['4400']['Artworks'])
 
 def loadArtworks(catalog):
     """
@@ -126,18 +126,12 @@ def fillMostUsedMediums(catalog):
 
     for key in artists_mediums:
         artist_medium = artists_mediums[key]['mediums']
+        artist_medium_list = artists_mediums[key]
         mediums_list = artist_medium['mediums_list']
         most_used_medium = model.MostUsedMedium(mediums_list)
         artist_medium['most_used'] = most_used_medium
-
-
-
-
-
+        artist_medium_list['Artworks'] = sortArworksByMedium(artist_medium_list, 3)
     
-
-            
-
 
 
 
@@ -158,9 +152,8 @@ def sortArtists(catalog, sort):
     return model.sort(catalog, sort, 'artists', model.cmpArtistByBeginDate)
 
 
-def sortArtistMediums(catalog, sort):
-
-    return model.sort(catalog, sort, 'artist_mediums', ) #FUNCIOOOON
+def sortArworksByMedium(artistmedium, sort):
+    return model.sort(artistmedium, sort, 'Artworks', model.cmpArtworksByMedium)
 
 
 def sortArtistTags(catalog, sort):
