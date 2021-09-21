@@ -137,12 +137,6 @@ def sortAdquires(catalog):
     """
     return model.sortAdquires(catalog)
 
-def sortIndep(catalog):
-    """
-    Ordena las lista obras de un solo autor por ConstituentID
-    """
-    return model.sortIndependents(catalog)
-
 # Funciones de consulta 
 def giveAuthorsName(catalog, ConstituentsID):
     """
