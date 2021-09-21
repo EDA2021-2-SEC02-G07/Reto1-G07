@@ -26,7 +26,10 @@ import controller
 from DISClib.ADT import list as lt
 assert cf
 from tabulate import tabulate
+import sys
 
+default_limit = 1000
+sys.setrecursionlimit(default_limit*10)
 
 """
 La vista se encarga de la interacción con el usuario
@@ -38,8 +41,8 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- listar cronológicamente los artistas ")
-    print("3- listar cronológicamente las adquisiciones")
+    print("2- listar cronológicamente las adquisiciones")
+
     print("4- clasificar las obras de un artista por técnica")
     print("5- clasificar las obras por la nacionalidad de sus creadores")
     print("6- clasificar las obras de un artista por técnica")
@@ -57,13 +60,25 @@ def loadData(catalog):
     """
     controller.loadData(catalog)
 
-catalog = None
+def printSortResults(ord_artworks, sample=10):
 
+    size = lt.size(ord_artworks)
+    if size > sample:
+        print("Las primeros ", sample, " obras ordenados son:")
+    i=1
+    while i <= sample:
+        artwork = lt.getElement(ord_artworks,i)
+        print('Titulo: ' + artwork['Title'] + ' Adquisición: ' + artwork['DateAcquired'])
+        i+=1
+catalog = None
+sort = ''
+tipo = '1'
 """
 Menu principal
 """
 while True:
     printMenu()
+   
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
