@@ -46,12 +46,14 @@ def loadData(catalog):
     loadArtworks(catalog)
     loadArtists(catalog)
     loadArtistMediumsTags(catalog)
-    
+    loadDptments(catalog)
     catalog['artworks'] = sortAdquires(catalog, 3)
     catalog['artists'] = sortArtists(catalog, 3)
     fillArtistMediums(catalog)
     fillMostUsedMediums(catalog)
     catalog['artists_tags'] = sortArtistTags(catalog, 3)
+    sort_dptments(catalog)
+    print(catalog['artworks_dptments']['Drawings & Prints'])
     
    
 
@@ -79,6 +81,35 @@ def loadArtists(catalog):
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtist(catalog, artist) 
+
+
+def loadDptments(catalog):
+    artworks = catalog['artworks']
+    size = model.size(artworks)
+    for i in range(0, size + 1):
+        artwork = model.getElement1(artworks, i)
+        dptment = artwork['Department']
+
+        if dptment in catalog['artworks_dptments']:
+            pass
+
+        else: 
+            new_dptment = model.newDptment()
+            model.addArtworkdptment(catalog, new_dptment, dptment)
+
+        model.addtolist(catalog['artworks_dptments'][dptment]['Artworks'], artwork)
+        try:
+            weight = float(artwork['Weight (kg)'])
+            catalog['artworks_dptments'][dptment]['weight'] += weight
+        except: 
+            pass
+
+        catalog['artworks_dptments'][dptment]['price']
+
+
+
+
+
 
 
 def loadArtistMediumsTags(catalog):
@@ -135,7 +166,15 @@ def fillMostUsedMediums(catalog):
         most_used_medium = model.MostUsedMedium(mediums_list)
         artist_medium['most_used'] = most_used_medium
         artist_medium_list['Artworks'] = sortArworksByMedium(artist_medium_list, 3)
+
     
+def sort_dptments(catalog):
+    artworks_dptments = catalog['artworks_dptments']
+
+    for key in artworks_dptments:
+        dptment = artworks_dptments[key]
+        dptment['Artworks'] = sortArtworksByYear(dptment, 3)
+
 
 
 
@@ -158,6 +197,10 @@ def sortArtists(catalog, sort):
 
 def sortArworksByMedium(artistmedium, sort):
     return model.sort(artistmedium, sort, 'Artworks', model.cmpArtworksByMedium)
+
+
+def sortArtworksByYear(Dptment, sort):
+    return model.sort(Dptment, sort, 'Artworks', model.cmpArtworksByYear)
 
 
 def sortArtistTags(catalog, sort):

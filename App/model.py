@@ -51,7 +51,8 @@ def newCatalog():
     catalog = {'artworks': None,
                'artists': None,
                'artists_mediums': None,
-               'artists_tags': None
+               'artists_tags': None, 
+               'artworks_dptments': None
 
                }
 
@@ -59,6 +60,7 @@ def newCatalog():
     catalog['artists'] = lt.newList('ARRAY_LIST')
     catalog['artists_mediums'] = {}
     catalog['artists_tags'] = lt.newList('ARRAY_LIST')
+    catalog['artworks_dptments'] = {}
 
     return catalog
 
@@ -70,6 +72,12 @@ def addArtwork(catalog, artwork):
 def addArtist(catalog, artist):
     # Se adiciona el artista a la lista de artistas
     lt.addLast(catalog['artists'], artist)
+
+
+def addArtworkdptment(catalog, dptment, dptment_name):
+
+    catalog['artworks_dptments'][dptment_name] = dptment
+
 
 def addArtistMedium(catalog, artist_medium):
 
@@ -89,6 +97,18 @@ def fillArtworks(artlist, artwork):
 
 
 # Funciones para creacion de datos
+
+
+def newDptment():
+    dpment = { 
+              'price':0,
+              'weight':0,
+              'expensive_artworks':{},
+              'Artworks': lt.newList('ARRAY_LIST')
+              }
+    return dpment
+
+    
 
 def newArtistMedium(ID, name):
 
@@ -140,6 +160,8 @@ def Artworks_in_a_medium(medium, artworks):
 def TagsFromName(name, catalog): 
     pos1, pos2 = binary_interval_search(catalog, 'artists_tags', name, name, cmpArtistByName, cmpArtistByNameItem)
     return pos1, pos2
+
+
 
 # Funciones de comparación
 def cmpArtworkByDateAcquired(artwork1, artwork2):
@@ -198,6 +220,9 @@ def cmpArtistByName(artist1,artist2):
     
     return x
 
+
+
+
 def cmpArtistByNameItem(item, artist):
     name1 = artist['name']
     name2 = item
@@ -208,7 +233,17 @@ def cmpArtistByNameItem(item, artist):
         return -1
     elif name2 < name1:
         return 1
+
+
+def cmpArtworksByYear(artwork1, artwork2):
+    if artwork1['Date'] == '' or artwork2['Date'] == '':
+        x = False
+    else: 
+        x = artwork1['Date'] < artwork2['Date']
     
+    return x
+
+
 
 def cmpArtworksByMedium(artwork1, artwork2):
 
@@ -355,6 +390,45 @@ def MostUsedMedium(mediums_list):
     return mostused
 
 
+def Transport_Price(Arwork):
+    Heigt = Artwork['Height (cm)']
+    Lenght = Arwork['Length (cm)']
+    Width = Artwork['Width (cm)']
+    Diameter = Artwork['Diameter (cm)']
+    Weight = Artwork['Weight (kg)']
+    tarifa = 72
+
+    try:
+        Price1 = (float(Heigt)/100 * float(Lenght)/100) * tarifa
+    except:
+        Price1 = 0
+    try:
+        Price2 = (3.1416 * (float(Diameter)/2) ** 2) * tarifa 
+    except:
+        Price2 = 0
+    try:    
+        Price3 = (float(Heigt)/100 * float(Lenght)/100 * float(Width)/100) * tarifa
+    except:
+        Price3 = 0
+    try:
+        Price4 = (float(Weight) * tarifa)
+    except:
+        Price4 = 0
+    price_list = [Price1, Price2, Price3, Price4]
+    expensive = -1
+    for price in price_list:
+        if price > expensive:
+            expensive = price
+    if expensive == 0:
+        expensive = 48   
+        
+        return expensive
+
+
+        
+
+    
+
 def size(ulist):
     size = lt.size(ulist)
     return size
@@ -368,3 +442,8 @@ def getElement1(ulist, pos):
     return element
 
 
+def addtolist(ulist, element):
+    lt.addLast(ulist, element)
+
+    
+    
