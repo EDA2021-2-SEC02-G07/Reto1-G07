@@ -25,6 +25,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
+from tabulate import tabulate
 
 
 """
@@ -85,8 +86,16 @@ while True:
         else:
             print('Hay', size, 'Artista(s) entre los años ingresados')
             print('Los primeros y los últimos 3 artistas (si los hay) son:')
+            table = [['Nombre', 'Año de nacimiento', 'Año de fallecimiento', 'Nacionalidad', 'Género']]
             for i in positions:
-                print(lt.getElement(catalog['artists'], i))
+                artista = lt.getElement(catalog['artists'], i)
+                Nombre = artista['DisplayName']
+                Nacimiento = artista['BeginDate']
+                Fallecimiento = artista['EndDate']
+                Nacionalidad = artista['Nationality']
+                Genero = artista['Gender']
+                table.append([Nombre, Nacimiento, Fallecimiento, Nacionalidad, Genero])
+            print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
     
     elif int(inputs[0]) == 4:
 
@@ -95,15 +104,21 @@ while True:
 
         ID, medium, total, pos1, pos2, size = controller.Artworks_in_a_medium(name, catalog)
 
-        print(catalog['artists_mediums'][ID])
-        print('La cantidad de obras es: ', size)
+        
+        print('La cantidad de obras del artista es: ', size)
         print('El medio más empleado es: ', medium) 
         print('En número de técnicas utilizadas es: ', total)
         print('Las obras en las que se utilizó', medium, 'son: ')
-        
+        table = [['Título', 'Fecha', 'Medio', 'Dimensiones']]
         while pos1 <= pos2:
-            print(lt.getElement(catalog['artists_mediums'][ID]['Artworks'], pos1))
+            obra = lt.getElement(catalog['artists_mediums'][ID]['Artworks'], pos1)
+            Titulo = obra['Title']
+            Fecha = obra['Date']
+            Medio = obra['Medium']
+            Dimensiones = obra['Dimensions']
+            table.append([Titulo, Fecha, Medio, Dimensiones])
             pos1 += 1
+        print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
 
 
     else:

@@ -390,9 +390,9 @@ def MostUsedMedium(mediums_list):
     return mostused
 
 
-def Transport_Price(Arwork):
+def Transport_Price(Artwork):
     Heigt = Artwork['Height (cm)']
-    Lenght = Arwork['Length (cm)']
+    Lenght = Artwork['Length (cm)']
     Width = Artwork['Width (cm)']
     Diameter = Artwork['Diameter (cm)']
     Weight = Artwork['Weight (kg)']
@@ -422,7 +422,7 @@ def Transport_Price(Arwork):
     if expensive == 0:
         expensive = 48   
         
-        return expensive
+    return expensive
 
 
         
@@ -445,5 +445,5 @@ def getElement1(ulist, pos):
 def addtolist(ulist, element):
     lt.addLast(ulist, element)
 
-    
-    
+def size(ulist):
+    return lt.size(ulist)

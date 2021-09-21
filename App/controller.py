@@ -53,7 +53,7 @@ def loadData(catalog):
     fillMostUsedMediums(catalog)
     catalog['artists_tags'] = sortArtistTags(catalog, 3)
     sort_dptments(catalog)
-    print(catalog['artworks_dptments']['Drawings & Prints'])
+    
     
    
 
@@ -104,7 +104,7 @@ def loadDptments(catalog):
         except: 
             pass
 
-        catalog['artworks_dptments'][dptment]['price']
+        catalog['artworks_dptments'][dptment]['price'] += model.Transport_Price(artwork)
 
 
 
@@ -243,7 +243,7 @@ def Artworks_in_a_medium(name, catalog):
     medium = Artist_medium['mediums']['most_used']
     total = Artist_medium['mediums']['total']
     pos1, pos2 = model.Artworks_in_a_medium(medium, Artist_medium)
-    size = pos2 - pos1 +1
+    size = model.size(Artist_medium['Artworks']) + 1
 
     return ID, medium, total, pos1, pos2, size
 
