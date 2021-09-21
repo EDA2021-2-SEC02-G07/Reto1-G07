@@ -20,6 +20,9 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+
+
+
 import config as cf
 import sys
 import controller
@@ -40,10 +43,12 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- listar cronológicamente las adquisiciones")
-    print("3- clasificar las obras de un artista por técnica")
-    print("4- clasificar las obras por la nacionalidad de sus creadores")
-    print("5- clasificar las obras de un artista por técnica")
+    print("2- listar cronológicamente loas artistas (Req. 1)")
+    print("3- listar cronológicamente las adquisiciones (Req. 2)")
+    print("4- clasificar las obras por nacionalidad de sus creadores (Req. 3)")
+    print("5- clasificar las obras de un artista por técnica (Req. 4)")
+    print("6- transportar obras de un departamento (Req. 5)")
+    print("7- proponer una nueva exposición en el museo (Req. 6)")
     print("0- Salir")
 
 def initCatalog():
@@ -58,16 +63,38 @@ def loadData(catalog):
     """
     controller.loadData(catalog)
 
-def printSortResults(ord_artworks, sample=10):
+def printSortResults(ord_artworks, sample=3):
+    n = 0
+    for x in ord_artworks:
+        if x['CreditLine'] == 'Purchase':
+            n += 1
+    size = len(ord_artworks)
 
-    size = lt.size(ord_artworks)
+    print("En este rango de años el MoMA adquirió", size, "obras únicas.")
+    print()
+    print("De estas", size,",", n, "fueron compradas por el MoMA" )
+    print()
     if size > sample:
-        print("Las primeros ", sample, " obras ordenados son:")
-    i=1
-    while i <= sample:
-        artwork = lt.getElement(ord_artworks,i)
-        print('Titulo: ' + artwork['ConstituentID'] + ' Adquisición: ' + artwork['DateAcquired'])
+        print("Las primeras y últimas ", sample, " obras ordenados son:")
+        print()
+        
+    j = len(ord_artworks)
+    i=0
+    while i < sample and i <= j-1:
+        artwork = ord_artworks[i]
+        print('ObjectID:  ' + artwork['ObjectID'] + '  Title:  ' + artwork['Title'] + '  ArtistNames:  ' 
+        + controller.giveAuthorsName(catalog, eval(artwork['ConstituentID'])) + '  Medium:  ' + artwork['Medium'] +
+        '  Date:  ' + artwork['Date'] + '  Dimensions:  ' + artwork['Dimensions'] + '  Department:  ' + artwork['Department'] )
+        print()
         i+=1
+    i = len(ord_artworks) - 1
+    while i >= j-sample and i>= 0:
+        artwork = ord_artworks[i]
+        print('ObjectID:  ' + artwork['ObjectID'] + '  Title:  ' + artwork['Title'] + '  ArtistNames:  ' 
+        + controller.giveAuthorsName(catalog, eval(artwork['ConstituentID'])) + '  Medium:  ' + artwork['Medium'] +
+        '  Date:  ' + artwork['Date'] + '  Dimensions:  ' + artwork['Dimensions'] + '  Department:  ' + artwork['Department'] )
+        print()
+        i-=1
 
 def printSort2DArtworksByYear(catalog, begin, end, area, sample=5):
     artworks = controller.loadRangeOfYears2DArtworks(catalog, begin, end)
@@ -85,48 +112,41 @@ def printSort2DArtworksByYear(catalog, begin, end, area, sample=5):
     print("Las primeras y últimas", sample, " obras ordenadas en el rango de años dado son:")
     print()
     j = len(artworks)
-    i=1
-    while i <= sample:
+    i=0
+    while i < sample and i <= j-1:
         artwork = artworks[i]
         print('ObjectID:  ' + artwork['ObjectID'] + '  Title:  ' + artwork['Title'] + '  ArtistNames:  ' 
         + controller.giveAuthorsName(catalog, eval(artwork['ConstituentID'])) + '  Medium:  ' + artwork['Medium'] +
-        '  Date:  ' + artwork['Date'] + '  Dimensions:  ' + artwork['Dimensions'] + '  Department:  ' + artwork['Department'] + 
-        '  Classification:  ' + artwork['Classification'] +
-         '  Área ocupada:  ', (float(artwork['Height (cm)'])*float(artwork['Width (cm)']))/10000 ,
-        '  URL:  ' + artwork['URL']  )
+        '  Date:  ' + artwork['Date'] + '  Dimensions:  ' + artwork['Dimensions'] + '  DateAcquired:  ' + artwork['DateAcquired'] )
         print()
         i+=1
     i = len(artworks) - 1
-    while i >= j-sample:
+    while i >= j-sample and i>= 0:
         artwork = artworks[i]
         print('ObjectID:  ' + artwork['ObjectID'] + '  Title:  ' + artwork['Title'] + '  ArtistNames:  ' 
         + controller.giveAuthorsName(catalog, eval(artwork['ConstituentID'])) + '  Medium:  ' + artwork['Medium'] +
-        '  Date:  ' + artwork['Date'] + '  Dimensions:  ' + artwork['Dimensions'] + '  Department:  ' + artwork['Department'] + 
-        '  Classification:  ' + artwork['Classification'] +
-         '  Área ocupada:  ', (float(artwork['Height (cm)'])*float(artwork['Width (cm)']))/10000 ,
-        '  URL:  ' + artwork['URL']  )
+        '  Date:  ' + artwork['Date'] + '  Dimensions:  ' + artwork['Dimensions'] + '  DateAcquired:  ' + artwork['DateAcquired'])
         print()
         i-=1
 
-    
-
-def printBigNation(ord_artworks, sample =3):
-    
-    print("Las primeras y últimas", sample, " obras ordenadas de nacionalidad ", "'",ord_artworks['nation'],"'"," son:")
+def printBigNation(bigNation, sample =3):
+    j = lt.size(bigNation)
+    print('El país con más obras es ' + bigNation['nation'] + ' con', j, 'obras ' )
+    print("Las primeras y últimas", sample, " obras ordenadas de nacionalidad ", "'",bigNation['nation'],"'"," son:")
     print()
-    j = lt.size(ord_artworks)
+    j = lt.size(bigNation)
     i=1
     while i <= sample:
-        artwork = lt.getElement(ord_artworks,i)
+        artwork = lt.getElement(bigNation,i)
         print('ObjectID:  ' + artwork['ObjectID'] + '  Title:  ' + artwork['Title'] + '  ArtistNames:  ' 
         + controller.giveAuthorsName(catalog, eval(artwork['ConstituentID'])) + '  Medium:  ' + artwork['Medium'] +
         '  Date:  ' + artwork['Date'] + '  Dimensions:  ' + artwork['Dimensions'] + '  Department:  ' + artwork['Department'] + 
         '  Classification:  ' + artwork['Classification'] + '  URL:  ' + artwork['URL']  )
         print()
         i+=1
-    i = lt.size(ord_artworks) - 1
+    i = lt.size(bigNation) - 1
     while i >= j-sample:
-        artwork = lt.getElement(ord_artworks,i)
+        artwork = lt.getElement(bigNation,i)
         print('ObjectID:  ' + artwork['ObjectID'] + '  Title:  ' + artwork['Title'] + '  ArtistNames:  ' 
         + controller.giveAuthorsName(catalog, eval(artwork['ConstituentID'])) + '  Medium:  ' + artwork['Medium'] +
         '  Date:  ' + artwork['Date'] + '  Dimensions:  ' + artwork['Dimensions'] + '  Department:  ' + artwork['Department'] + 
@@ -142,7 +162,7 @@ def printSortNations(nations, sample=10):
     i=1
     while i <= sample:
         artwork = lt.getElement(nations,i)
-        print('Nationality: ' + artwork['nation'] + '   Artworks: ' + str(lt.size(artwork)))
+        print('Nationality: ' + artwork['nation'] + '   Number of artists: ' + str(lt.size(artwork)))
         i+=1
         
 catalog = None
@@ -161,16 +181,27 @@ while True:
 
         print("Cargando información de los archivos ....")
         print('Obras cargadas: ' + str(lt.size(catalog['artworks'])))
-        print('Obras que son de un solo autor cargadas: ' + str(lt.size(catalog['independents'])))
-        print('Obras que son colaboraciones de varios autores cargadas: ' + str(lt.size(catalog['colaborations'])))
         print('Obras que son de dos dimensiones cargadas: ' + str(lt.size(catalog['2DArtworks'])))
         print('Artistas cargados: ' + str(lt.size(catalog['artists'])))
-    
     elif int(inputs[0]) == 2:
         pass
     elif int(inputs[0]) == 3:
-        pass
+        InitialYear = input('Escriba el año inicial de las obras (AAAA): ')
+        InitialMonth = input('Escriba el mes inicial de las obras (MM): ')
+        InitialDay = input('Escriba el día inicial de las obras (DD): ')
+        FinalYear = input('Escriba el año final de las obras (AAAA): ') 
+        FinalMonth = input('Escriba el mes inicial de las obras (MM): ')
+        FinallDay = input('Escriba el día inicial de las obras (DD): ')
+        beginDate = InitialYear +'-' + InitialMonth +'-' + InitialDay 
+        endDate = FinalYear + '-' + FinalMonth + '-' + FinallDay
+        print('=============== Req No.2 Inputs ===============')
+        print('Busca obras entre ', beginDate, ' y ', endDate)
+        print()
+        print('=============== Req No.2 Answer ===============')
+        printSortResults(controller.giveRangeOfDates(catalog, beginDate, endDate))
     elif int(inputs[0]) == 4:
+        pass
+    elif int(inputs[0]) == 5:
         print('=============== Req No.4 Inputs ===============')
         print('Clasificando las obras por la nacionalidad de sus creadores... ')
         print()
@@ -178,11 +209,11 @@ while True:
         print()
         printSortNations(catalog['nations'])
         print()
-        printBigNation(catalog['nations']['elements'][0])
-    elif int(inputs[0]) == 5:
-        
-        print(controller.giveLeftArtworkPosByYear(catalog, 2017))  
-    elif int(inputs[0]) == 6:
+        printBigNation(catalog['bigNation'])
+          
+    elif int(inputs[0]) == 6:      
+        pass
+    elif int(inputs[0]) == 7:
         InitialYear = int(input('Escriba el año inicial de las obras: '))
         EndingYear = int(input('Escriba el año final de las obras: '))
         area = float(input('Indique el área disponible en m² para los objetos planos(cuadros y fotos): '))
