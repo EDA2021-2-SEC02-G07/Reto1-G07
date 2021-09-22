@@ -214,8 +214,13 @@ def cmpArtworkByDateAcquired2(Date1, Date2):
     Date1: fecha 1 en la forma 'AAAA-MM-DD'
     Date2: fecha 2 en la forma 'AAAA-MM-DD'
     """
-    if  Date1 == '':
+    if  Date1 == '' and Date2 != '':
         return -1
+    elif Date2 == '' and Date1 != '':
+        return -2
+    elif Date2 == '' and Date1 == '':
+        return -1
+
     else:
         date_object1 = datetime.strptime(Date1, '%Y-%m-%d').date()
         date_object2 = datetime.strptime(Date2, '%Y-%m-%d').date()

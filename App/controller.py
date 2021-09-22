@@ -54,7 +54,7 @@ def loadArtworks(catalog):
     """
     Carga las obras del archivo.  
     """
-    artfile = cf.data_dir + 'Artworks-utf8-large.csv'
+    artfile = cf.data_dir + 'Artworks-utf8-small.csv'
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
     for artwork in input_file:
         model.addArtwork(catalog, artwork)
@@ -65,7 +65,7 @@ def loadArtists(catalog):
 
     Complejidad:  O(n + nlogn) n es el número de obras.
     """
-    artfile = cf.data_dir + 'Artists-utf8-large.csv'
+    artfile = cf.data_dir + 'Artists-utf8-small.csv'
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtist(catalog, artist) 
@@ -127,7 +127,7 @@ def load2DArtworks(catalog):
         Carga en el cátalogo el la llave '2DArtworks' una sublista de las obras que sean de dos dimensiones (cuadros y fotos) 
     """
     for x in lt.iterator(catalog['artworks']):
-        if (x['Classification'] == 'Design' or x['Classification'] == 'Painting' or x['Classification'] == 'Photograph' or x['Classification'] == 'Drawing' or x['Classification'] == 'Print') and x['Date'] != '' and x['Width (cm)'] != '' and x['Height (cm)'] != '' :
+        if x['Date'] != '' and x['Width (cm)'] != '' and x['Height (cm)'] != '' :
             model.add2DArtworks(catalog, x)
     
 # Funciones de ordenamiento
