@@ -41,25 +41,28 @@ los mismos.
 """
 
 # Construccion de modelos
-def newCatalog(tipo: str):
+def newCatalog():
     """
     Inicializa el catálogo. Crea una lista vacia para guardar
-    todos los libros, adicionalmente, crea una lista vacia para los autores,
-    una lista vacia para los generos y una lista vacia para la asociación
-    generos y libros. Retorna el catalogo inicializado.
+    todos las obras y artistas.
     """
     catalog = {'artworks': None,
                'artists': None,
+               'artistsByID': None,
                'adquire' : None,
-               'artist_years': None,
-               'nacionality': None,
+               'nations': None,
+               'bigNation': None,
+               '2DArtworks': None
                }
-    if tipo == 'ARRAY_LIST':
-        catalog['artworks'] = lt.newList('ARRAY_LIST')
-        catalog['artists'] = lt.newList('ARRAY_LIST')
-    else:  
-        catalog['artworks'] = lt.newList('LINKED_LIST')
-        catalog['artists'] = lt.newList('LINKED_LIST')
+    
+    catalog['artworks'] =      lt.newList('ARRAY_LIST')
+    catalog['artists'] =       lt.newList('ARRAY_LIST')
+    catalog['adquire'] =       lt.newList('ARRAY_LIST')
+    catalog['nations'] =       lt.newList('ARRAY_LIST')
+    catalog['bigNation'] =    lt.newList('ARRAY_LIST')
+    catalog['2DArtworks'] =    lt.newList('ARRAY_LIST')
+
+    
     return catalog
 
 # Funciones para agregar informacion al catalogo
@@ -71,51 +74,227 @@ def addArtist(catalog, artist):
     # Se adiciona el artista a la lista de artistas
     lt.addLast(catalog['artists'], artist)
 
+def add2DArtworks(catalog, artwork):
+    lt.addLast(catalog['2DArtworks'], artwork)
 # Funciones para creacion de datos
 
 # Funciones de consulta
+def giveAuthorName(catalog, ConstituentID):
+    """
+        Dado un valor único 'ConstituentID' devuelve el nombre del artista asociado a ese ID
+    """
+    for x in catalog['artists']['elements']:
+        if int(ConstituentID) == int(x['ConstituentID']):
+            return (x['DisplayName'].split(','))[0]
+
+def giveElementBinarySearch(list, key, element):
+    """
+        En una lista y dado un key encuentra a través de una busqeuda binaria la posición de un elemento.
+        * Si el elemento no se encuentra en la lista retorna -1
+        ** Si la lista contiene más de una vez el elemento que se busca retorna el la menor posición posible de ese elemento en la lista
+    """
+    lo = 0
+    hi = len(list) - 1
+    mid = 0
+
+    while lo <= hi :
+        mid = (hi + lo) // 2
+        if int(list[mid][key]) < element:
+            lo = mid + 1
+        elif int(list[mid][key]) > element:
+            hi = mid - 1
+        else:
+            return mid
+
+    return -1
+
+def giveRightDateBinarySearch(list, element):
+    """
+        Dada la lista de obras organizadas por fecha de adquisición y dada 
+        un fecha retorna entre todas las obras que hayan sido adquiridas en esa fecha la posición de la que tenga mayor posición.
+
+        Si no hay ninguna obra con esa fecha escogera entre las obras con 
+        fecha de adquisición inmediatamente menor y dará la posición mayor entre ellas.
+
+       * Si el elemento no se encuentra en la lista retorna -1
+       ** Si la lista contiene más de una vez el elemento que se busca retorna el la mayor posición posible de ese elemento en la lista.
+
+       Complejidad: Al basarse en una busqueda binaria con pequeñas modificaciones sabemos que su complejidad se aproxima a
+                     O(logn) con n es el número de obras
+    """
+    lo = 0
+    hi = lt.size(list) - 1
+    mid = 0
+    while lo <= hi:
+        mid = (hi + lo) // 2
+        if cmpArtworkByDateAcquired2(lt.getElement(list, mid)['DateAcquired'], element ) == 1:
+            lo = mid + 1
+        elif cmpArtworkByDateAcquired2(lt.getElement(list, mid)['DateAcquired'], element ) == -1:
+            hi = mid - 1
+        else: 
+            break
+    
+    
+    result = mid
+    while cmpArtworkByDateAcquired2(lt.getElement(list, mid)['DateAcquired'],lt.getElement(list, result)['DateAcquired']) == 0:
+        mid += 1
+    mid -= 1
+
+    if cmpArtworkByDateAcquired2(element, lt.getElement(list, mid)['DateAcquired'] ) == 1:
+        return mid - 1
+    else:
+         return mid
+
+def giveLeftDateBinarySearch(list,element):
+    """
+        Dada la lista de obras organizadas por fecha de adquisición y dada 
+        un fecha retorna entre todas las obras que hayan sido adquiridas en esa fecha la posición de la que tenga menor posición.
+
+        Si no hay ninguna obra con esa fecha escogera entre las obras con 
+        fecha de adquisición inmediatamente mayor y dará la posición menor entre ellas.
+
+        * Si el elemento no se encuentra en la lista retorna -1
+        ** Si la lista contiene más de una vez el elemento que se busca retorna el la menor posición posible de ese elemento en la lista
+
+        Complejidad:  Al basarse en una busqueda binaria con pequeñas modificaciones sabemos que su complejidad se aproxima a
+                       O(logn) con n es el número de obras
+    """
+    lo = 0
+    hi = lt.size(list) - 1
+    mid = 0
+    while lo <= hi:
+        mid = (hi + lo) // 2
+        if cmpArtworkByDateAcquired2(lt.getElement(list, mid)['DateAcquired'], element ) == 1:
+            lo = mid + 1
+        elif cmpArtworkByDateAcquired2(lt.getElement(list, mid)['DateAcquired'], element ) == -1:
+            hi = mid - 1
+        else: 
+            break 
+    
+    if lt.getElement(list, mid)['DateAcquired'] == '':
+        mid -=1
+    result = mid
+    while cmpArtworkByDateAcquired2(lt.getElement(list, mid)['DateAcquired'],lt.getElement(list, result)['DateAcquired'] ) == 0:
+        if mid - 1 == -1 or mid + 1 == lt.size(list):
+            return mid
+        else:
+            mid -= 1
+    mid += 1
+    if cmpArtworkByDateAcquired2(element, lt.getElement(list, mid)['DateAcquired'] ) == -1:
+        return mid + 1
+        
+    else:
+         return mid
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+
 def cmpArtworkByDateAcquired(artwork1, artwork2):
     """
-    Devuelve verdadero (True) si el 'DateAcquired' de artwork1 es menores que el de artwork2
+    Devuelve verdadero (True) si el 'DateAcquired' de artwork1 es menor que el de artwork2
     Args:
     artwork1: informacion de la primera obra que incluye su valor 'DateAcquired'
     artwork2: informacion de la segunda obra que incluye su valor 'DateAcquired'
-    # Funciones de consulta sobre el catálogo
     """
-    if artwork1['DateAcquired'] == '' or artwork2['DateAcquired'] == '':
-        x = False 
+    
+    if artwork1['DateAcquired'] == ''and artwork2['DateAcquired'] != '' :
+        x = False
+    elif artwork1['DateAcquired'] != '' and artwork2['DateAcquired'] == '':
+        x = True
+    elif artwork1['DateAcquired'] == '' and artwork2['DateAcquired'] == '':
+        x = False
     else:
         date_object1 = datetime.strptime(artwork1['DateAcquired'], '%Y-%m-%d').date()
         date_object2 = datetime.strptime(artwork2['DateAcquired'], '%Y-%m-%d').date()
         x = ((date_object1) < (date_object2))
-
     return x
+def cmpArtworkByDateAcquired2(Date1, Date2):
+    """
+    Devuelve verdadero (True) si el Date1 es una fecha menor que el date2
+    Args:
+    Date1: fecha 1 en la forma 'AAAA-MM-DD'
+    Date2: fecha 2 en la forma 'AAAA-MM-DD'
+    """
+    if  Date1 == '' and Date2 != '':
+        return -1
+    elif Date2 == '' and Date1 != '':
+        return -2
+    elif Date2 == '' and Date1 == '':
+        return -1
+
+    else:
+        date_object1 = datetime.strptime(Date1, '%Y-%m-%d').date()
+        date_object2 = datetime.strptime(Date2, '%Y-%m-%d').date()
+        if ((date_object1) < (date_object2)):
+            return 1
+        elif ((date_object1) > (date_object2)):
+            return -1
+        elif ((date_object1) == (date_object2)):
+            return 0
+        
+def cmpArtistByConstituentID(artist1, artist2):
+    """
+    Devuelve verdadero (True) si el 'ConstituentID' de artist1 es menor que el de artist2
+    Args:
+    artwork1: informacion de la primera obra que incluye su valor 'ConstituentID'
+    artwork2: informacion de la segunda obra que incluye su valor 'ConstituentID'
+    """
+
+    return int(artist1['ConstituentID']) < int(artist2['ConstituentID'])
+
+def cmpArtworksByConstituentID(artwork1, artwork2):
+    """
+    Devuelve verdadero (True) si el 'ConstituentID' de una obras es menor que el de artist2
+    Args:
+    artwork1: informacion de la primera obra que incluye su valor 'ConstituentID'
+    artwork2: informacion de la segunda obra que incluye su valor 'ConstituentID'
+    """
+
+    return int(eval(artwork1['ConstituentID'])[0]) == int(eval(artwork2['ConstituentID'])[0])
+
+def cmpArtworkBySize(array1, array2):
+    """
+    Devuelve verdadero (True) si el 'size' de array1 es mayor que el de array2
+    Args:
+    array1: Primera lista de tipo 'ARRAY_LIST' que contiene su valor 'Size'
+    array2: Segunda lista de tipo 'ARRAY_LIST' que contiene su valor 'Size'
+    """
+
+    return lt.size(array1) > lt.size(array2)
+
+def cmpArtworkByYear(array1, array2):
+    """
+    Devuelve verdadero (True) si el 'Date' de array1 es menor que el de array2
+    Args:
+    array1: Primera lista de tipo 'ARRAY_LIST' que contiene su valor 'Date'
+    array2: Segunda lista de tipo 'ARRAY_LIST' que contiene su valor 'Date'
+    """
+    
+    return int(array1['Date']) < int(array2['Date'])
+
+
 # Funciones de ordenamiento
 
-def sortAdquires(catalog, size, sort):
-    # TODO completar modificaciones para el laboratorio 4
-    sub_list = lt.subList(catalog['artworks'], 1, size)
-    sub_list = sub_list.copy()
-    if sort == 1:
-        start_time = time.process_time()
-        sorted_list = insertion.sort(sub_list, cmpArtworkByDateAcquired)
-        stop_time = time.process_time()
-        elapsed_time_mseg = (stop_time - start_time)*1000
-    elif sort == 3:
-        start_time = time.process_time()
-        sorted_list = merge.sort(sub_list, cmpArtworkByDateAcquired)
-        stop_time = time.process_time()
-        elapsed_time_mseg = (stop_time - start_time)*1000
-    elif sort == 4:
-        start_time = time.process_time()
-        sorted_list = quick.sort(sub_list, cmpArtworkByDateAcquired)
-        stop_time = time.process_time()
-        elapsed_time_mseg = (stop_time - start_time)*1000
-    else:
-        start_time = time.process_time()
-        sorted_list = shell.sort(sub_list, cmpArtworkByDateAcquired)
-        stop_time = time.process_time()
-        elapsed_time_mseg = (stop_time - start_time)*1000    
-    return elapsed_time_mseg, sorted_list
+def sortAdquires(catalog):
+    # Organiza una lista de obras según su fecha de adquisición.
+
+    sorted_list = merge.sort(catalog['adquire'], cmpArtworkByDateAcquired)
+    return  sorted_list
+
+def sortArtistID(catalog):
+    # Organiza una lista de obras según su fecha de adquisición.
+
+    sorted_list = merge.sort(catalog['artistsByID'], cmpArtistByConstituentID)
+    return  sorted_list
+
+def sortNationsSize(catalog):
+    # Organiza una lista de listas según el tamaño se sus sublistas.
+
+    sorted_list = merge.sort(catalog['nations'], cmpArtworkBySize)
+    return  sorted_list
+
+def sortBigNation(catalog):
+    # Organiza una lista de listas según el tamaño se sus sublistas.
+
+    sorted_list = merge.sort(catalog['bigNation'], cmpArtworkBySize)
+    return  sorted_list
+
