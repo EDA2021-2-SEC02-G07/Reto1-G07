@@ -135,6 +135,47 @@ while True:
             pos1 += 1
         print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
 
+    
+    elif int(inputs[0]) == 6: 
+        Department = input('Ingrese el nombre del departamento: ')
+
+        price, weight, size, Oldest, Oldest_prices, expensives, expensive_prices = controller.Department_transport(catalog, Department)
+
+        if weight == 0:
+            weight = 'no registra'
+
+        print('El precio estimado del transporte es: ', price)
+        print('El peso total de las obras es de: ', weight)
+        print('El número de obras a transportar es de:', size)
+        print('Las obras más antiguas a transportar son: ')
+        table = [['Título', 'Clasificación', 'Fecha de la obra', 'Medio', 'Dimensiones', 'Costo asociado al transporte']]
+        n = 0
+        for obra in Oldest:
+            Titulo = obra['Title']
+            Clasificacion = ['Clasiffication']
+            Fecha = obra['Date']
+            Medio = obra['Medium']
+            Dimensiones = obra['Dimensions']
+            Costo = Oldest_prices[n]
+            table.append([Titulo, Clasificacion, Fecha, Medio, Dimensiones, Costo])
+            n+=1
+        print(table)
+
+        print('Las obras más caras son: ')
+        n = 0
+        for obra in expensives:
+            Titulo = obra['Title']
+            Clasificacion = obra['Clasiffication']
+            Fecha = obra['Date']
+            Medio = obra['Medium']
+            Dimensiones = obra['Dimensions']
+            Costo = expensive_prices[n]
+            table.append([Titulo, Clasificacion, Fecha, Medio, Dimensiones, Costo])
+            n+=1
+        print(table)
+
+
+
 
     else:
         sys.exit(0)

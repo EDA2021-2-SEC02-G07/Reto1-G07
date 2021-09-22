@@ -53,7 +53,7 @@ def loadData(catalog):
     fillMostUsedMediums(catalog)
     catalog['artists_tags'] = sortArtistTags(catalog, 3)
     sort_dptments(catalog)
-    
+
     
    
 
@@ -105,6 +105,7 @@ def loadDptments(catalog):
             pass
 
         catalog['artworks_dptments'][dptment]['price'] += model.Transport_Price(artwork)
+        model.expensive_artworks(artwork ,catalog['artworks_dptments'][dptment])
 
 
 
@@ -209,11 +210,6 @@ def sortArtistTags(catalog, sort):
 
 
 # Funciones de consulta sobre el catálogo
-def firsts_artworks(catalog):
-    model.firstartworks(catalog)
-    return None
-
-
 
 def Artist_in_a_range(year1, year2, catalog):
     posiciones = []
@@ -247,3 +243,25 @@ def Artworks_in_a_medium(name, catalog):
 
     return ID, medium, total, pos1, pos2, size
 
+
+def Department_transport(catalog, Department):
+    Artworks = catalog['artworks_dptments'][Department]['Artworks']
+    price = catalog['artworks_dptments'][Department]['price']
+    weight = catalog['artworks_dptments'][Department]['weight']
+    size = model.size(Artworks)
+    expensive = catalog['artworks_dptments'][Department]['expensive_artworks']
+    Oldest = []
+    expensives = []
+    expensive_prices = []
+    for i in range(0,5):
+        Oldest.append(model.lt.getElement(catalog['artworks_dptments'][Department]['Artworks'], i))
+    Oldest_prices = []
+
+    for artwork in Oldest:
+
+        Oldest_prices.insert(0, model.Transport_Price(artwork))
+    for key in expensive:
+        expensives.append(expensive[key])
+        expensive_prices.append(key)
+    return price, weight, size, Oldest, Oldest_prices, expensives, expensive_prices
+    

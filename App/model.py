@@ -265,7 +265,6 @@ def cmpArtworksByMediumItem(item, artwork):
     elif medium2 < medium1:
         return 1
 
-
 # Funciones de ordenamiento
 
 def sort(catalog, sort, key, cmpfunction):
@@ -403,7 +402,7 @@ def Transport_Price(Artwork):
     except:
         Price1 = 0
     try:
-        Price2 = (3.1416 * (float(Diameter)/2) ** 2) * tarifa 
+        Price2 = (3.1416 * (float(Diameter)/200) ** 2) * tarifa 
     except:
         Price2 = 0
     try:    
@@ -425,7 +424,21 @@ def Transport_Price(Artwork):
     return expensive
 
 
-        
+def expensive_artworks(Artwork, dptment):
+    price = Transport_Price(Artwork)
+    Expensive_list = dptment['expensive_artworks']
+    if len(Expensive_list) < 5:
+        Expensive_list[price] = Artwork
+    else: 
+        menor = price
+        for key in Expensive_list:
+            if float(key) < menor:
+                menor = float(key)
+        Expensive_list[price] = Artwork
+        del Expensive_list[menor]
+    
+
+
 
     
 
