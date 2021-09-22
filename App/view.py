@@ -28,6 +28,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
+from tabulate import tabulate
 import sys
 import time
 from tabulate import tabulate
@@ -253,7 +254,30 @@ while True:
         elapsed_time_mseg = (stop_time - start_time)
         print('La carga demoró', elapsed_time_mseg, 'segundos')
     elif int(inputs[0]) == 2:
-        pass
+        try:
+            year1=int(input('Ingrese el año inicial: '))
+            year2=int(input('Ingrese el año final: '))
+        except:
+            print('Por favor ingrese un año válido')
+        size, positions = controller.Artist_in_a_range(year1, year2, catalog)
+        
+        if positions == None:
+            print('No hay artistas en el rango')
+        
+        else:
+            print('Hay', size, 'Artista(s) entre los años ingresados')
+            print('Los primeros y los últimos 3 artistas (si los hay) son:')
+            table = [['Nombre', 'Año de nacimiento', 'Año de fallecimiento', 'Nacionalidad', 'Género']]
+            for i in positions:
+                artista = lt.getElement(catalog['artists'], i)
+                Nombre = artista['DisplayName']
+                Nacimiento = artista['BeginDate']
+                Fallecimiento = artista['EndDate']
+                Nacionalidad = artista['Nationality']
+                Genero = artista['Gender']
+                table.append([Nombre, Nacimiento, Fallecimiento, Nacionalidad, Genero])
+            print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
+
     elif int(inputs[0]) == 3:
         start_time = time.process_time()
         InitialYear = input('Escriba el año inicial de las obras (AAAA): ')
@@ -271,8 +295,30 @@ while True:
         printSortResults(controller.giveRangeOfDates(catalog, beginDate, endDate))
         elapsed_time_mseg = (stop_time - start_time)
         print('La carga demoró', elapsed_time_mseg, 'segundos')
+
     elif int(inputs[0]) == 4:
-        pass
+
+        name = input('Ingrese el nombre del artista: ')
+
+
+        ID, medium, total, pos1, pos2, size = controller.Artworks_in_a_medium(name, catalog)
+
+        
+        print('La cantidad de obras del artista es: ', size)
+        print('El medio más empleado es: ', medium) 
+        print('En número de técnicas utilizadas es: ', total)
+        print('Las obras en las que se utilizó', medium, 'son: ')
+        table = [['Título', 'Fecha', 'Medio', 'Dimensiones']]
+        while pos1 <= pos2:
+            obra = lt.getElement(catalog['artists_mediums'][ID]['Artworks'], pos1)
+            Titulo = obra['Title']
+            Fecha = obra['Date']
+            Medio = obra['Medium']
+            Dimensiones = obra['Dimensions']
+            table.append([Titulo, Fecha, Medio, Dimensiones])
+            pos1 += 1
+        print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
+
     elif int(inputs[0]) == 5:
         start_time = time.process_time()
         print('=============== Req No.4 Inputs ===============')
@@ -285,8 +331,45 @@ while True:
         printBigNation(catalog['bigNation'])
         elapsed_time_mseg = (stop_time - start_time)
         print('La carga demoró', elapsed_time_mseg, 'segundos')
-    elif int(inputs[0]) == 6:      
-        pass
+
+    elif int(inputs[0]) == 6: 
+        Department = input('Ingrese el nombre del departamento: ')
+
+        price, weight, size, Oldest, Oldest_prices, expensives, expensive_prices = controller.Department_transport(catalog, Department)
+
+        if weight == 0:
+            weight = 'no registra'
+
+        print('El precio estimado del transporte es: ', price)
+        print('El peso total de las obras es de: ', weight)
+        print('El número de obras a transportar es de:', size)
+        print('Las obras más antiguas a transportar son: ')
+        table = [['Título', 'Clasificación', 'Fecha de la obra', 'Medio', 'Dimensiones', 'Costo asociado al transporte']]
+        n = 0
+        for obra in Oldest:
+            Titulo = obra['Title']
+            Clasificacion = ['Classification']
+            Fecha = obra['Date']
+            Medio = obra['Medium']
+            Dimensiones = obra['Dimensions']
+            Costo = Oldest_prices[n]
+            table.append([Titulo, Clasificacion, Fecha, Medio, Dimensiones, Costo])
+            n+=1
+        print(table)
+
+        print('Las obras más caras son: ')
+        n = 0
+        for obra in expensives:
+            Titulo = obra['Title']
+            Clasificacion = obra['Classification']
+            Fecha = obra['Date']
+            Medio = obra['Medium']
+            Dimensiones = obra['Dimensions']
+            Costo = expensive_prices[n]
+            table.append([Titulo, Clasificacion, Fecha, Medio, Dimensiones, Costo])
+            n+=1
+        print(table)
+
     elif int(inputs[0]) == 7:
         start_time = time.process_time()
         InitialYear = int(input('Escriba el año inicial de las obras: '))
@@ -301,8 +384,9 @@ while True:
         printSort2DArtworksByYear(catalog, InitialYear, EndingYear, area)
         elapsed_time_mseg = (stop_time - start_time)
         print('La carga demoró', elapsed_time_mseg, 'segundos')
-
+        
     else:
         sys.exit(0)
 sys.exit(0)
+
 
