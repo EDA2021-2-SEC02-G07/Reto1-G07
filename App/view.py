@@ -32,6 +32,7 @@ from tabulate import tabulate
 import sys
 import time
 from tabulate import tabulate
+from datetime import datetime
 default_limit = 1000
 sys.setrecursionlimit(default_limit*10)
 
@@ -47,8 +48,8 @@ def printMenu():
     print("1- Cargar información en el catálogo")
     print("2- listar cronológicamente loas artistas (Req. 1)")
     print("3- listar cronológicamente las adquisiciones (Req. 2)")
-    print("4- clasificar las obras por nacionalidad de sus creadores (Req. 3)")
-    print("5- clasificar las obras de un artista por técnica (Req. 4)")
+    print("4- clasificar las obras de un artista por técnica (Req. 3)")
+    print("5- clasificar las obras por nacionalidad de sus creadores (Req. 4)")
     print("6- transportar obras de un departamento (Req. 5)")
     print("7- proponer una nueva exposición en el museo (Req. 6)")
     print("0- Salir")
@@ -254,6 +255,7 @@ while True:
         elapsed_time_mseg = (stop_time - start_time)
         print('La carga demoró', elapsed_time_mseg, 'segundos')
     elif int(inputs[0]) == 2:
+        start_time = time.process_time()
         try:
             year1=int(input('Ingrese el año inicial: '))
             year2=int(input('Ingrese el año final: '))
@@ -277,27 +279,36 @@ while True:
                 Genero = artista['Gender']
                 table.append([Nombre, Nacimiento, Fallecimiento, Nacionalidad, Genero])
             print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print('La carga demoró', elapsed_time_mseg, 'milisegundos')
 
     elif int(inputs[0]) == 3:
         start_time = time.process_time()
-        InitialYear = input('Escriba el año inicial de las obras (AAAA): ')
-        InitialMonth = input('Escriba el mes inicial de las obras (MM): ')
-        InitialDay = input('Escriba el día inicial de las obras (DD): ')
-        FinalYear = input('Escriba el año final de las obras (AAAA): ') 
-        FinalMonth = input('Escriba el mes inicial de las obras (MM): ')
-        FinallDay = input('Escriba el día inicial de las obras (DD): ')
-        beginDate = InitialYear +'-' + InitialMonth +'-' + InitialDay 
-        endDate = FinalYear + '-' + FinalMonth + '-' + FinallDay
+        try:
+            InitialYear = int(input('Escriba el año inicial de las obras (AAAA): '))
+            InitialMonth = int(input('Escriba el mes inicial de las obras (MM): '))
+            InitialDay = int(input('Escriba el día inicial de las obras (DD): '))
+            FinalYear = int(input('Escriba el año final de las obras (AAAA): ')) 
+            FinalMonth = int(input('Escriba el mes inicial de las obras (MM): '))
+            FinallDay = int(input('Escriba el día inicial de las obras (DD): '))
+            beginDate = str(InitialYear) +'-' + str(InitialMonth) +'-' + str(InitialDay) 
+            endDate = str(FinalYear) + '-' + str(FinalMonth) + '-' + str(FinallDay)
+            date_object1 = datetime.strptime(beginDate, '%Y-%m-%d').date()
+            date_object2 = datetime.strptime(endDate, '%Y-%m-%d').date()
+        except ValueError:
+            print('Por favor ingrese una fecha válida')
         print('=============== Req No.2 Inputs ===============')
         print('Busca obras entre ', beginDate, ' y ', endDate)
         print()
         print('=============== Req No.2 Answer ===============')
         printSortResults(controller.giveRangeOfDates(catalog, beginDate, endDate))
-        elapsed_time_mseg = (stop_time - start_time)
-        print('La carga demoró', elapsed_time_mseg, 'segundos')
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print('La carga demoró', elapsed_time_mseg, 'milisegundos')
+        stop_time = time.process_time()
 
     elif int(inputs[0]) == 4:
-
+        start_time = time.process_time()
         name = input('Ingrese el nombre del artista: ')
 
 
@@ -318,6 +329,9 @@ while True:
             table.append([Titulo, Fecha, Medio, Dimensiones])
             pos1 += 1
         print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print('La carga demoró', elapsed_time_mseg, 'milisegundos')
 
     elif int(inputs[0]) == 5:
         start_time = time.process_time()
@@ -329,10 +343,11 @@ while True:
         printSortNations(catalog['nations'])
         print()
         printBigNation(catalog['bigNation'])
-        elapsed_time_mseg = (stop_time - start_time)
-        print('La carga demoró', elapsed_time_mseg, 'segundos')
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print('La carga demoró', elapsed_time_mseg, 'milisegundos')
 
     elif int(inputs[0]) == 6: 
+        start_time = time.process_time()
         Department = input('Ingrese el nombre del departamento: ')
 
         price, weight, size, Oldest, Oldest_prices, expensives, expensive_prices = controller.Department_transport(catalog, Department)
@@ -344,31 +359,52 @@ while True:
         print('El peso total de las obras es de: ', weight)
         print('El número de obras a transportar es de:', size)
         print('Las obras más antiguas a transportar son: ')
-        table = [['Título', 'Clasificación', 'Fecha de la obra', 'Medio', 'Dimensiones', 'Costo asociado al transporte']]
+        table = [['Título', 'Clasificación', 'Fecha', 'Medio', 'Dimensiones', 'Costo']]
         n = 0
         for obra in Oldest:
-            Titulo = obra['Title']
-            Clasificacion = ['Classification']
+            if len(str(obra['Title'])) > 30:
+                title = str(obra['Title'])[0:30] + '...'
+            else: title = str(obra['Title'])
+            if len(controller.giveAuthorsName(catalog, eval(obra['ConstituentID']))) > 14:
+                artists = controller.giveAuthorsName(catalog, eval(obra['ConstituentID']))[0:30] + '...'
+            else: artists = controller.giveAuthorsName(catalog, eval(obra['ConstituentID']))
+            if len(obra['Medium']) > 30:
+                medium = obra['Medium'][0:30] + '...'
+            else: medium = obra['Medium']
+            if len(obra['Dimensions']) > 35:
+                dimension = obra['Dimensions'][0:35] + '...'
+            else: dimension = obra['Dimensions']
+            Clasificacion = obra['Classification']
             Fecha = obra['Date']
-            Medio = obra['Medium']
-            Dimensiones = obra['Dimensions']
-            Costo = Oldest_prices[n]
-            table.append([Titulo, Clasificacion, Fecha, Medio, Dimensiones, Costo])
+            Costo = (Oldest_prices[n])
+            table.append([title, Clasificacion, Fecha, medium, dimension, Costo])
             n+=1
-        print(table)
-
+        print(tabulate(table, headers='firstrow', tablefmt='fancy_grid', stralign='left'))
+        table = [['Título', 'Clasificación', 'Fecha', 'Medio', 'Dimensiones', 'Costo']]
         print('Las obras más caras son: ')
         n = 0
         for obra in expensives:
-            Titulo = obra['Title']
+            if len(str(obra['Title'])) > 30:
+                title = str(obra['Title'])[0:30] + '...'
+            else: title = str(obra['Title'])
+            if len(controller.giveAuthorsName(catalog, eval(obra['ConstituentID']))) > 14:
+                artists = controller.giveAuthorsName(catalog, eval(obra['ConstituentID']))[0:30] + '...'
+            else: artists = controller.giveAuthorsName(catalog, eval(obra['ConstituentID']))
+            if len(obra['Medium']) > 30:
+                medium = obra['Medium'][0:30] + '...'
+            else: medium = obra['Medium']
+            if len(obra['Dimensions']) > 35:
+                dimension = obra['Dimensions'][0:35] + '...'
+            else: dimension = obra['Dimensions']
             Clasificacion = obra['Classification']
             Fecha = obra['Date']
-            Medio = obra['Medium']
-            Dimensiones = obra['Dimensions']
-            Costo = expensive_prices[n]
-            table.append([Titulo, Clasificacion, Fecha, Medio, Dimensiones, Costo])
+            Costo = Oldest_prices[n]
+            table.append([title, Clasificacion, Fecha, medium, dimension, Costo])
             n+=1
-        print(table)
+        print(tabulate(table, headers='firstrow', tablefmt='fancy_grid', stralign='left'))
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print('La carga demoró', elapsed_time_mseg, 'milisegundos')
 
     elif int(inputs[0]) == 7:
         start_time = time.process_time()
@@ -382,8 +418,8 @@ while True:
         print()
         print('=============== Req No.6 Answer ===============')
         printSort2DArtworksByYear(catalog, InitialYear, EndingYear, area)
-        elapsed_time_mseg = (stop_time - start_time)
-        print('La carga demoró', elapsed_time_mseg, 'segundos')
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print('La carga demoró', elapsed_time_mseg, 'milisegundos')
         
     else:
         sys.exit(0)

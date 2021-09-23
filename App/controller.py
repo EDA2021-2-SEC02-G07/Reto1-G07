@@ -51,7 +51,6 @@ def loadData(catalog):
     load2DArtworks(catalog)
     loadArtistMediumsTags(catalog)
     loadDptments(catalog)
-    catalog['artworks'] = sortAdquires(catalog, 3)
     catalog['artists'] = sortArtists(catalog, 3)
     fillArtistMediums(catalog)
     fillMostUsedMediums(catalog)
@@ -59,16 +58,12 @@ def loadData(catalog):
     sort_dptments(catalog)
 
     
-   
-
-
-    
 
 def loadArtworks(catalog):
     """
     Carga las obras del archivo.  
     """
-    artfile = cf.data_dir + 'Artworks-utf8-small.csv'
+    artfile = cf.data_dir + 'Artworks-utf8-large.csv'
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
     for artwork in input_file:
         model.addArtwork(catalog, artwork)
@@ -79,7 +74,7 @@ def loadArtists(catalog):
 
     Complejidad:  O(n + nlogn) n es el número de obras.
     """
-    artfile = cf.data_dir + 'Artists-utf8-small.csv'
+    artfile = cf.data_dir + 'Artists-utf8-large.csv'
     input_file = csv.DictReader(open(artfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtist(catalog, artist) 
@@ -152,15 +147,6 @@ def sortAdquires(catalog):
     return model.sortAdquires(catalog)
 
 # Funciones de consulta 
-
-def giveAuthorsName(catalog, ConstituentsID):
-    """
-    Dado una lista de Constituent ID devuelve los nombres de los artistas asociados a esos ID
-    """
-    names = []
-    for x in ConstituentsID:
-        names.append(' '+model.giveAuthorName(catalog, x))
-    return ','.join(names)
 
 def loadDptments(catalog):
     artworks = catalog['artworks']
@@ -265,9 +251,15 @@ def loadRangeOfYears2DArtworks(catalog, begin, end):
     return Artworks
 
 def giveRightPosArtworkstByDateAcquired(catalog, date):
+    """
+        LLama la función del model 'giveRightDateBinarySearch'
+    """
     return model.giveRightDateBinarySearch(catalog['adquire'], date)
 
 def giveLeftPosArtworkstByDateAcquired(catalog, date):
+    """
+        LLama la función del model 'giveRightDateBinarySearch'
+    """
     return model.giveLeftDateBinarySearch(catalog['adquire'], date)
 
 def giveRangeOfDates(catalog, begin, end):
@@ -282,6 +274,15 @@ def giveRangeOfDates(catalog, begin, end):
     posF = giveRightPosArtworkstByDateAcquired(catalog, end)
     return catalog['adquire']['elements'][posI:posF+1]
 
+def giveAuthorsName(catalog, ConstituentsID):
+    """
+    Dado una lista de Constituent ID devuelve los nombres de los artistas asociados a esos ID
+    """
+    names = []
+
+    for x in ConstituentsID:
+        names.append(' '+model.giveAuthorName(catalog, x))
+    return ','.join(names)
 
 def sortArtists(catalog, sort):
     """
